@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
@@ -372,7 +372,7 @@
   </div>
 
   <script>
-    const SPREADSHEET_URL = "https://script.google.com/macros/s/AKfycbw07X46do2rGRBYr5jc7NNhN_ze6ZFe0aWMKy6wGqA_Thr8QSTNuwNekoYJFW8TJbIgPQ/exec";
+    const SPREADSHEET_URL = "https://script.google.com/macros/s/AKfycbw9WYCrnLoTyMrSsIEH4xloRPi2uSh1zA9ZUGhqkwST16xOykSrfqu9mtFWn6B0hH6qQQ/exec";
     let activeGroupId = null;
 
     function kirimKeSpreadsheet(payload) {
@@ -384,7 +384,11 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       })
-      .then(() => console.log("Data berhasil dikirim ke Spreadsheet:", payload))
+      .then(() => {
+        console.log("Data berhasil dikirim ke Spreadsheet:", payload);
+        // Setelah mengirim data, tarik data terbaru dari sheet
+        setTimeout(sinkronkanData, 1500);
+      })
       .catch(err => console.error("Gagal mengirim ke Spreadsheet:", err));
     }
 
@@ -405,7 +409,59 @@
       return groupId;
     }
 
-    // FUNGSI UTAMA SELESAI RONDA (BERUBAH JADI MERAH UNTUK YANG BELUM HADIR)
+    // SINKRONISASI REAL-TIME DARI SPREADSHEET
+    function sinkronkanData() {
+      if (!SPREADSHEET_URL) return;
+
+      fetch(SPREADSHEET_URL)
+        .then(res => res.json())
+        .then(response => {
+          if (response.status === "success" && response.data) {
+            updateTampilanDariSheet(response.data);
+          }
+        })
+        .catch(err => console.error("Gagal menyinkronkan data:", err));
+    }
+
+    function updateTampilanDariSheet(rowsData) {
+      // Baris pertama (0) adalah Header
+      for (let i = 1; i < rowsData.length; i++) {
+        const row = rowsData[i];
+        const hariTanggalSheet = row[1]; // Kolom Hari/Tanggal Ronda
+        const jamAction = row[2];        // Kolom Jam Action
+        const namaSheet = row[3];        // Kolom Nama Warga
+        const statusSheet = row[4];      // Kolom Status
+
+        if (!namaSheet || !statusSheet) continue;
+
+        // Cari baris di tabel HTML yang sesuai dengan Nama dan Tanggal
+        document.querySelectorAll('tr:not(.header-row):not(.ket-row)').forEach(tr => {
+          const nameCol = tr.querySelector('.name-col');
+          const groupId = tr.getAttribute('data-group');
+          const hariTanggalHTML = getHariTanggal(groupId);
+
+          if (nameCol && nameCol.textContent.trim().toUpperCase() === namaSheet.trim().toUpperCase() && hariTanggalHTML === hariTanggalSheet) {
+            const btnHadir = tr.querySelector('.btn-hadir');
+            if (btnHadir && !btnHadir.disabled) {
+              if (statusSheet === "HADIR") {
+                btnHadir.classList.add('active');
+                btnHadir.setAttribute('data-time', jamAction);
+                btnHadir.textContent = `✓ Hadir (${jamAction})`;
+                tr.classList.add('is-present');
+              } else if (statusSheet === "BATAL HADIR") {
+                btnHadir.classList.remove('active');
+                btnHadir.removeAttribute('data-time');
+                btnHadir.textContent = 'Hadir';
+                tr.classList.remove('is-present');
+              }
+            }
+          }
+        });
+      }
+      saveState();
+    }
+
+    // FUNGSI UTAMA SELESAI RONDA
     function toggleSelesai(groupId) {
       const headerRow = document.querySelector(`.header-row[data-group="${groupId}"]`);
       const groupRows = document.querySelectorAll(`#group-${groupId} tr:not(.ket-row)`);
@@ -423,9 +479,8 @@
         groupRows.forEach(row => {
           const hadirBtn = row.querySelector('.btn-hadir');
           if (hadirBtn) {
-            hadirBtn.disabled = true; // Nonaktifkan tombol
+            hadirBtn.disabled = true;
             if (!hadirBtn.classList.contains('active')) {
-              // Jika belum hadir, ubah ke status TIDAK HADIR (MERAH)
               hadirBtn.classList.add('absen');
               hadirBtn.textContent = 'Tidak Hadir';
               row.classList.add('is-absent');
@@ -749,10 +804,16 @@
           }
         });
       }
+
+      // Mulai sinkronisasi awal saat halaman dimuat
+      sinkronkanData();
     }
 
     document.addEventListener('DOMContentLoaded', loadState);
     document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+
+    // Cek data secara otomatis dari Google Sheets setiap 5 detik
+    setInterval(sinkronkanData, 5000);
   </script>
 </body>
 </html>
