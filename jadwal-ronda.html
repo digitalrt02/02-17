@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jadwal Ronda RT 02 RW 17</title>
   <style>
-  body {
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
+    body {
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
     * {
       box-sizing: border-box;
       margin: 0;
@@ -173,9 +173,8 @@
       color: white;
     }
 
-    /* === PERUBAHAN TAMPILAN MERAH KETIKA SELESAI === */
     tr.group-done {
-      background-color: #ffebee !important; /* Warna merah muda pudar untuk baris */
+      background-color: #ffebee !important;
     }
 
     tr.group-done .num-col {
@@ -183,11 +182,11 @@
     }
 
     .header-row.group-done .header-day {
-      background-color: #c62828 !important; /* Warna header kelompok merah pekat */
+      background-color: #c62828 !important;
     }
 
     .btn-selesai.completed {
-      background-color: #b71c1c !important; /* Warna tombol selesai merah marun */
+      background-color: #b71c1c !important;
       color: white;
     }
 
@@ -280,7 +279,6 @@
       .schedule-table th, .schedule-table td { border: 1px solid #000000; padding: 6px 8px; font-size: 10pt; }
       .action-col, .btn-group-header, .modal-backdrop { display: none !important; }
     }
-	
   </style>
 </head>
 <body>
@@ -759,7 +757,85 @@
       .catch(err => console.error("Gagal mengirim ke Spreadsheet:", err));
     }
 
-    /* FUNGSI MENGAMBIL JAM, MENIT, DETIK SAAT INI */
+    /* FUNGSI UNTUK MENGAMBIL DATA DATABASE REAL-TIME DARI SPREADSHEET */
+    function ambilDataDariSpreadsheet() {
+      if (!SPREADSHEET_URL || SPREADSHEET_URL.trim() === "") return;
+
+      fetch(SPREADSHEET_URL)
+        .then(response => response.json())
+        .then(data => {
+          if (Array.isArray(data)) {
+            data.forEach(item => {
+              // Cari baris hari sesuai tanggal
+              const dayTitles = document.querySelectorAll('.day-title');
+              dayTitles.forEach(span => {
+                if (span.textContent.trim() === item.hariTanggal) {
+                  const headerRow = span.closest('.header-row');
+                  const groupId = headerRow.getAttribute('data-group');
+                  const tbody = document.getElementById(`group-${groupId}`);
+
+                  // 1. Jika Status HADIR / BATAL HADIR
+                  if (item.status === "HADIR") {
+                    const rows = tbody.querySelectorAll('tr:not(.ket-row)');
+                    rows.forEach(row => {
+                      const nameCol = row.querySelector('.name-col');
+                      if (nameCol && nameCol.textContent.trim() === item.nama.trim()) {
+                        const btn = row.querySelector('.btn-hadir');
+                        btn.classList.add('active');
+                        btn.setAttribute('data-time', item.waktu);
+                        btn.textContent = `✓ Hadir (${item.waktu})`;
+                        row.classList.add('is-present');
+                      }
+                    });
+                  } else if (item.status === "BATAL HADIR") {
+                    const rows = tbody.querySelectorAll('tr:not(.ket-row)');
+                    rows.forEach(row => {
+                      const nameCol = row.querySelector('.name-col');
+                      if (nameCol && nameCol.textContent.trim() === item.nama.trim()) {
+                        const btn = row.querySelector('.btn-hadir');
+                        btn.classList.remove('active');
+                        btn.removeAttribute('data-time');
+                        btn.textContent = 'Hadir';
+                        row.classList.remove('is-present');
+                      }
+                    });
+                  }
+
+                  // 2. Jika Status RONDA SELESAI
+                  if (item.status === "RONDA SELESAI") {
+                    const btnSelesai = headerRow.querySelector('.btn-selesai');
+                    btnSelesai.classList.add('completed');
+                    btnSelesai.setAttribute('data-time', item.waktu);
+                    btnSelesai.textContent = `✓ Selesai (${item.waktu})`;
+                    headerRow.classList.add('group-done');
+                    tbody.querySelectorAll('tr').forEach(r => {
+                      r.classList.add('group-done');
+                      const hBtn = r.querySelector('.btn-hadir');
+                      if(hBtn) hBtn.disabled = true;
+                    });
+                  }
+
+                  // 3. Jika Status CATATAN KEJADIAN
+                  if (item.status === "CATATAN KEJADIAN") {
+                    let ketRow = tbody.querySelector('.ket-row');
+                    const btnTambahKet = headerRow.querySelector('.btn-tambah-ket');
+                    if (!ketRow) {
+                      ketRow = document.createElement('tr');
+                      ketRow.className = 'ket-row';
+                      tbody.appendChild(ketRow);
+                    }
+                    ketRow.innerHTML = `<td colspan="3"><span class="ket-title">📌 Catatan Kejadian:</span> <span class="ket-text">${escapeHtml(item.keterangan)}</span></td>`;
+                    btnTambahKet.textContent = "✏️ Edit Keterangan";
+                  }
+                }
+              });
+            });
+            saveState(); // Simpan pembaruan ke cache lokal
+          }
+        })
+        .catch(err => console.error("Gagal mengambil data dari Spreadsheet:", err));
+    }
+
     function getWaktuSekarang() {
       const now = new Date();
       const jam = String(now.getHours()).padStart(2, '0');
@@ -861,21 +937,18 @@
       saveState();
     }
 
-    /* === TOGGLE SELESAI DENGAN WAKTU LENGKAP === */
     function toggleSelesai(groupId) {
       const headerRow = document.querySelector(`.header-row[data-group="${groupId}"]`);
       const groupRows = document.querySelectorAll(`#group-${groupId} tr`);
       const btn = headerRow.querySelector('.btn-selesai');
       const hariTanggal = getHariTanggal(groupId);
       
-      // Ambil waktu jam:menit:detik baru jika belum tersimpan
       let waktu = btn.getAttribute('data-time') || getWaktuSekarang();
-
       const isCompleted = btn.classList.toggle('completed');
 
       if (isCompleted) {
         btn.setAttribute('data-time', waktu);
-        btn.textContent = `✓ Selesai (${waktu})`; // Menampilkan format Jam:Menit:Detik
+        btn.textContent = `✓ Selesai (${waktu})`;
         headerRow.classList.add('group-done');
         groupRows.forEach(row => {
           row.classList.add('group-done');
@@ -1034,77 +1107,80 @@
 
     function loadState() {
       const saved = localStorage.getItem('ronda_full_schedule_dated');
-      if (!saved) return;
+      if (saved) {
+        const groupsData = JSON.parse(saved);
 
-      const groupsData = JSON.parse(saved);
+        Object.keys(groupsData).forEach(groupId => {
+          const tbody = document.getElementById(`group-${groupId}`);
+          if (!tbody) return;
 
-      Object.keys(groupsData).forEach(groupId => {
-        const tbody = document.getElementById(`group-${groupId}`);
-        if (!tbody) return;
+          const data = groupsData[groupId];
+          if (!data || !data.rows) return;
 
-        const data = groupsData[groupId];
-        if (!data || !data.rows) return;
+          const existingRows = tbody.querySelectorAll('tr:not(.ket-row)');
+          
+          data.rows.forEach((rowData, index) => {
+            let tr = existingRows[index];
 
-        const existingRows = tbody.querySelectorAll('tr:not(.ket-row)');
-        
-        data.rows.forEach((rowData, index) => {
-          let tr = existingRows[index];
+            if (!tr) {
+              tr = document.createElement('tr');
+              tr.setAttribute('data-group', groupId);
+              if (rowData.isCustom) tr.setAttribute('data-custom', 'true');
+              tbody.appendChild(tr);
+            }
 
-          if (!tr) {
-            tr = document.createElement('tr');
-            tr.setAttribute('data-group', groupId);
-            if (rowData.isCustom) tr.setAttribute('data-custom', 'true');
-            tbody.appendChild(tr);
-          }
+            if (rowData.isPresent) tr.classList.add('is-present');
+            if (data.completed) tr.classList.add('group-done');
 
-          if (rowData.isPresent) tr.classList.add('is-present');
-          if (data.completed) tr.classList.add('group-done');
+            const timeStr = rowData.timeHadir ? ` (${rowData.timeHadir})` : '';
 
-          const timeStr = rowData.timeHadir ? ` (${rowData.timeHadir})` : '';
-
-          tr.innerHTML = `
-            <td class="num-col">${index + 1}</td>
-            <td class="name-col">${rowData.name}</td>
-            <td class="action-col">
-              <button class="btn btn-hadir ${rowData.isPresent ? 'active' : ''}" 
-                      ${rowData.timeHadir ? `data-time="${rowData.timeHadir}"` : ''} 
-                      ${data.completed ? 'disabled' : ''} 
-                      onclick="toggleHadir(this)">
-                ${rowData.isPresent ? `✓ Hadir${timeStr}` : 'Hadir'}
-              </button>
-              ${rowData.isCustom ? '<button class="btn btn-delete" onclick="hapusAnggota(this)">✕</button>' : ''}
-            </td>
-          `;
-        });
-
-        if (data.kejadianText) {
-          let ketRow = tbody.querySelector('.ket-row');
-          if (!ketRow) {
-            ketRow = document.createElement('tr');
-            ketRow.className = 'ket-row';
-            tbody.appendChild(ketRow);
-          }
-          ketRow.innerHTML = `<td colspan="3"><span class="ket-title">📌 Catatan Kejadian:</span> <span class="ket-text">${escapeHtml(data.kejadianText)}</span></td>`;
-        }
-
-        const headerRow = document.querySelector(`.header-row[data-group="${groupId}"]`);
-        if (headerRow) {
-          const selesaiBtn = headerRow.querySelector('.btn-selesai');
-          const btnTambahKet = headerRow.querySelector('.btn-tambah-ket');
-
-          if (data.completed) {
-            selesaiBtn.classList.add('completed');
-            if (data.timeSelesai) selesaiBtn.setAttribute('data-time', data.timeSelesai);
-            const timeStr = data.timeSelesai ? ` (${data.timeSelesai})` : '';
-            selesaiBtn.textContent = `✓ Selesai${timeStr}`;
-            headerRow.classList.add('group-done');
-          }
+            tr.innerHTML = `
+              <td class="num-col">${index + 1}</td>
+              <td class="name-col">${rowData.name}</td>
+              <td class="action-col">
+                <button class="btn btn-hadir ${rowData.isPresent ? 'active' : ''}" 
+                        ${rowData.timeHadir ? `data-time="${rowData.timeHadir}"` : ''} 
+                        ${data.completed ? 'disabled' : ''} 
+                        onclick="toggleHadir(this)">
+                  ${rowData.isPresent ? `✓ Hadir${timeStr}` : 'Hadir'}
+                </button>
+                ${rowData.isCustom ? '<button class="btn btn-delete" onclick="hapusAnggota(this)">✕</button>' : ''}
+              </th>
+            `;
+          });
 
           if (data.kejadianText) {
-            btnTambahKet.textContent = "✏️ Edit Keterangan";
+            let ketRow = tbody.querySelector('.ket-row');
+            if (!ketRow) {
+              ketRow = document.createElement('tr');
+              ketRow.className = 'ket-row';
+              tbody.appendChild(ketRow);
+            }
+            ketRow.innerHTML = `<td colspan="3"><span class="ket-title">📌 Catatan Kejadian:</span> <span class="ket-text">${escapeHtml(data.kejadianText)}</span></td>`;
           }
-        }
-      });
+
+          const headerRow = document.querySelector(`.header-row[data-group="${groupId}"]`);
+          if (headerRow) {
+            const selesaiBtn = headerRow.querySelector('.btn-selesai');
+            const btnTambahKet = headerRow.querySelector('.btn-tambah-ket');
+
+            if (data.completed) {
+              selesaiBtn.classList.add('completed');
+              if (data.timeSelesai) selesaiBtn.setAttribute('data-time', data.timeSelesai);
+              const timeStr = data.timeSelesai ? ` (${data.timeSelesai})` : '';
+              selesaiBtn.textContent = `✓ Selesai${timeStr}`;
+              headerRow.classList.add('group-done');
+            }
+
+            if (data.kejadianText) {
+              btnTambahKet.textContent = "✏️ Edit Keterangan";
+            }
+          }
+        });
+      }
+
+      // SETELAH MEMBACA DARI LOKAL, AMBIL UPDATE TERBARU DARI GOOGLE SHEETS DARI HP LAIN
+      ambilDataDariSpreadsheet();
     }
 
     document.addEventListener('DOMContentLoaded', loadState);
