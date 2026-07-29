@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
@@ -753,11 +753,7 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       })
-      .then(() => {
-        console.log("Data berhasil dikirim ke Spreadsheet:", payload);
-        // Langsung refresh data setelah mengirim agar sinkron
-        setTimeout(ambilDataDariSpreadsheet, 1000);
-      })
+      .then(() => console.log("Data berhasil dikirim ke Spreadsheet:", payload))
       .catch(err => console.error("Gagal mengirim ke Spreadsheet:", err));
     }
 
@@ -770,6 +766,7 @@
         .then(data => {
           if (Array.isArray(data)) {
             data.forEach(item => {
+              // Cari baris hari sesuai tanggal
               const dayTitles = document.querySelectorAll('.day-title');
               dayTitles.forEach(span => {
                 if (span.textContent.trim() === item.hariTanggal) {
@@ -777,7 +774,7 @@
                   const groupId = headerRow.getAttribute('data-group');
                   const tbody = document.getElementById(`group-${groupId}`);
 
-                  // 1. Status HADIR / BATAL HADIR
+                  // 1. Jika Status HADIR / BATAL HADIR
                   if (item.status === "HADIR") {
                     const rows = tbody.querySelectorAll('tr:not(.ket-row)');
                     rows.forEach(row => {
@@ -804,9 +801,9 @@
                     });
                   }
 
-                  // 2. Status RONDA SELESAI / BATAL SELESAI
-                  const btnSelesai = headerRow.querySelector('.btn-selesai');
+                  // 2. Jika Status RONDA SELESAI
                   if (item.status === "RONDA SELESAI") {
+                    const btnSelesai = headerRow.querySelector('.btn-selesai');
                     btnSelesai.classList.add('completed');
                     btnSelesai.setAttribute('data-time', item.waktu);
                     btnSelesai.textContent = `✓ Selesai (${item.waktu})`;
@@ -816,39 +813,24 @@
                       const hBtn = r.querySelector('.btn-hadir');
                       if(hBtn) hBtn.disabled = true;
                     });
-                  } else if (item.status === "BATAL SELESAI") {
-                    btnSelesai.classList.remove('completed');
-                    btnSelesai.removeAttribute('data-time');
-                    btnSelesai.textContent = 'Selesai';
-                    headerRow.classList.remove('group-done');
-                    tbody.querySelectorAll('tr').forEach(r => {
-                      r.classList.remove('group-done');
-                      const hBtn = r.querySelector('.btn-hadir');
-                      if(hBtn) hBtn.disabled = false;
-                    });
                   }
 
-                  // 3. Status CATATAN KEJADIAN
+                  // 3. Jika Status CATATAN KEJADIAN
                   if (item.status === "CATATAN KEJADIAN") {
                     let ketRow = tbody.querySelector('.ket-row');
                     const btnTambahKet = headerRow.querySelector('.btn-tambah-ket');
-                    if (item.keterangan && item.keterangan.trim() !== "") {
-                      if (!ketRow) {
-                        ketRow = document.createElement('tr');
-                        ketRow.className = 'ket-row';
-                        tbody.appendChild(ketRow);
-                      }
-                      ketRow.innerHTML = `<td colspan="3"><span class="ket-title">📌 Catatan Kejadian:</span> <span class="ket-text">${escapeHtml(item.keterangan)}</span></td>`;
-                      btnTambahKet.textContent = "✏️ Edit Keterangan";
-                    } else if (ketRow) {
-                      ketRow.remove();
-                      btnTambahKet.textContent = "+ Keterangan";
+                    if (!ketRow) {
+                      ketRow = document.createElement('tr');
+                      ketRow.className = 'ket-row';
+                      tbody.appendChild(ketRow);
                     }
+                    ketRow.innerHTML = `<td colspan="3"><span class="ket-title">📌 Catatan Kejadian:</span> <span class="ket-text">${escapeHtml(item.keterangan)}</span></td>`;
+                    btnTambahKet.textContent = "✏️ Edit Keterangan";
                   }
                 }
               });
             });
-            saveState(); // Simpan pembaruan ke storage lokal
+            saveState(); // Simpan pembaruan ke cache lokal
           }
         })
         .catch(err => console.error("Gagal mengambil data dari Spreadsheet:", err));
@@ -990,14 +972,6 @@
           const hadirBtn = row.querySelector('.btn-hadir');
           if(hadirBtn) hadirBtn.disabled = false;
         });
-
-        kirimKeSpreadsheet({
-          hariTanggal: hariTanggal,
-          waktu: waktu,
-          nama: "-",
-          status: "BATAL SELESAI",
-          keterangan: "Status ronda selesai dibatalkan."
-        });
       }
       saveState();
     }
@@ -1047,14 +1021,6 @@
       } else {
         if (ketRow) ketRow.remove();
         btnTambahKet.textContent = "+ Keterangan";
-
-        kirimKeSpreadsheet({
-          hariTanggal: hariTanggal,
-          waktu: waktu,
-          nama: "-",
-          status: "CATATAN KEJADIAN",
-          keterangan: ""
-        });
       }
 
       tutupModalKejadian();
@@ -1179,7 +1145,7 @@
                   ${rowData.isPresent ? `✓ Hadir${timeStr}` : 'Hadir'}
                 </button>
                 ${rowData.isCustom ? '<button class="btn btn-delete" onclick="hapusAnggota(this)">✕</button>' : ''}
-              </td>
+              </th>
             `;
           });
 
@@ -1213,11 +1179,8 @@
         });
       }
 
-      // AMBIL UPDATE PERTAMA KALI
+      // SETELAH MEMBACA DARI LOKAL, AMBIL UPDATE TERBARU DARI GOOGLE SHEETS DARI HP LAIN
       ambilDataDariSpreadsheet();
-
-      // AUTO REFRESH SETIAP 5 DETIK AGAR HP A DAN HP B SINKRON SECARA REAL-TIME
-      setInterval(ambilDataDariSpreadsheet, 5000);
     }
 
     document.addEventListener('DOMContentLoaded', loadState);
