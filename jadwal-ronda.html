@@ -3,817 +3,323 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jadwal Ronda RT 02 RW 17</title>
+  <title>JADWAL RONDA RT 02 RW 17</title>
   <style>
-    body {
-      -webkit-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-    }
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; }
+    body { background-color: #ffffff; padding: 20px; display: flex; justify-content: center; }
+    
+    .container { width: 100%; max-width: 800px; }
+    
+    /* Judul Utama */
+    h1.title { text-align: center; font-size: 26px; font-weight: bold; margin-bottom: 12px; letter-spacing: 0.5px; }
+    hr.divider { border: 0; height: 2px; background: #333; margin-bottom: 25px; }
 
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      color: #111111;
-      background-color: #f4f6f9;
-      padding: 12px;
-      line-height: 1.4;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      background-color: #ffffff;
-      padding: 16px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .title-container {
-      text-align: center;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid #333;
-    }
-
-    h1 {
-      font-size: clamp(1.2rem, 4vw, 1.6rem);
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #1a252f;
-    }
-
-    .schedule-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 25px;
-    }
-
-    .schedule-table th, .schedule-table td {
-      border: 1px solid #cccccc;
-      padding: 8px 10px;
-      font-size: clamp(0.85rem, 3vw, 1rem);
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-    .header-day {
+    /* Baris Header / Info & Tombol */
+    .header-bar {
       background-color: #2c3e50;
-      color: #ffffff;
-      font-weight: bold;
-      text-align: left;
-      font-size: clamp(0.95rem, 3.5vw, 1.1rem);
-      padding: 8px 12px;
-    }
-
-    .header-content {
+      color: white;
+      padding: 10px 15px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .btn-group-header {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .num-col {
-      width: 45px;
-      text-align: center;
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
       font-weight: bold;
-      background-color: #f8f9fa;
+      font-size: 16px;
     }
 
-    .name-col {
-      text-align: left;
-      text-transform: uppercase;
-      font-weight: 600;
-      letter-spacing: 0.3px;
-    }
-
-    .action-col {
-      width: 170px;
-      text-align: center;
-    }
-
-    .ket-row td {
-      background-color: #fffde7;
-      color: #795548;
-      font-size: 0.9rem;
-      padding: 10px 12px;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-      line-height: 1.5;
-    }
-
-    .ket-title {
-      font-weight: bold;
-      color: #e65100;
-    }
-
-    .btn {
-      padding: 5px 8px;
+    .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn-group button {
       border: none;
       border-radius: 4px;
+      color: white;
+      padding: 6px 12px;
+      font-size: 14px;
       font-weight: bold;
       cursor: pointer;
-      font-size: 0.75rem;
-      transition: all 0.2s ease;
     }
+    .btn-tambah { background-color: #2ec4b6; }
+    .btn-ket { background-color: #ff9f1c; }
+    .btn-selesai { background-color: #8e44ad; }
+    .btn-reset { background-color: #e74c3c; }
 
+    /* Tabel */
+    table { width: 100%; border-collapse: collapse; background: white; }
+    table, th, td { border: 1px solid #ccc; }
+    td { padding: 12px 15px; font-size: 16px; font-weight: bold; vertical-align: middle; }
+    
+    .col-no { width: 50px; text-align: center; font-size: 18px; }
+    .col-nama { text-transform: uppercase; letter-spacing: 0.5px; }
+    .col-action { width: 160px; text-align: center; }
+
+    /* Tombol Hadir */
     .btn-hadir {
       background-color: #e0e0e0;
-      color: #333333;
-      width: 100%;
-    }
-
-    tr.is-present {
-      background-color: #fff9c4 !important;
-    }
-    
-    tr.is-present .num-col {
-      background-color: #fff176 !important;
-    }
-
-    .btn-hadir.active {
-      background-color: #fbc02d !important;
-      color: #000000 !important;
-    }
-
-    .btn-selesai {
-      background-color: #8e44ad;
-      color: white;
-    }
-
-    .btn-tambah-ket {
-      background-color: #ff9800;
-      color: white;
-    }
-
-    .btn-tambah {
-      background-color: #27ae60;
-      color: white;
-    }
-
-    .btn-delete {
-      background-color: #ff5252;
-      color: white;
-      margin-left: 4px;
-    }
-
-    .btn-reset {
-      background-color: #e74c3c;
-      color: white;
-    }
-
-    /* BARIS & TOMBOL TIDAK HADIR SAAT SELESAI (WARNA MERAH) */
-    tr.is-absent {
-      background-color: #ffebee !important;
-    }
-
-    tr.is-absent .num-col {
-      background-color: #ffcdd2 !important;
-    }
-
-    .btn-hadir.absen {
-      background-color: #e74c3c !important;
-      color: white !important;
-    }
-
-    .header-row.group-done .header-day {
-      background-color: #c62828 !important;
-    }
-
-    .btn-selesai.completed {
-      background-color: #b71c1c !important;
-      color: white;
-    }
-
-    .footer-container {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 30px;
-      gap: 20px;
-    }
-
-    .sig-box {
-      flex: 1;
-      text-align: center;
-      font-size: clamp(0.9rem, 3vw, 1.05rem);
-    }
-
-    .sig-title {
-      font-weight: bold;
-      margin-bottom: 60px;
-    }
-
-    .sig-name {
-      font-weight: bold;
-      text-decoration: underline;
-    }
-
-    .modal-backdrop {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal-box {
-      background: #ffffff;
-      padding: 20px;
-      border-radius: 8px;
-      width: 90%;
-      max-width: 550px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
-
-    .modal-box h3 {
-      margin-bottom: 12px;
-      color: #1a252f;
-      font-size: 1.1rem;
-    }
-
-    .modal-box textarea {
-      width: 100%;
-      height: 140px;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-family: inherit;
-      font-size: 0.95rem;
-      resize: vertical;
-      outline: none;
-    }
-
-    .modal-box textarea:focus {
-      border-color: #ff9800;
-    }
-
-    .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 15px;
-    }
-
-    .modal-btn {
+      border: 1px solid #b5b5b5;
+      color: #333;
       padding: 8px 16px;
-      border: none;
       border-radius: 4px;
+      font-size: 14px;
       font-weight: bold;
       cursor: pointer;
+      width: 100%;
+      display: block;
+      position: relative;
+      z-index: 1;
+    }
+    .btn-hadir.active {
+      background-color: #2ed573 !important;
+      color: white !important;
+      border-color: #26af5f !important;
     }
 
-    .modal-btn-simpan { background-color: #27ae60; color: white; }
-    .modal-btn-batal { background-color: #7f8c8d; color: white; }
-
-    @media print {
-      body { background-color: #ffffff; padding: 0; }
-      .container { box-shadow: none; padding: 0; max-width: 100%; }
-      .header-day { background-color: #dbe5f1 !important; color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .schedule-table th, .schedule-table td { border: 1px solid #000000; padding: 6px 8px; font-size: 10pt; }
-      .action-col, .btn-group-header, .modal-backdrop { display: none !important; }
+    /* Modal Pop-up */
+    .modal { 
+      display: none; 
+      position: fixed; 
+      top: 0; left: 0; 
+      width: 100%; height: 100%; 
+      background: rgba(0,0,0,0.5); 
+      justify-content: center; 
+      align-items: center; 
+      z-index: 999; 
     }
+    .modal-content { background: white; padding: 20px; border-radius: 6px; width: 320px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+    .modal-content h3 { margin-bottom: 12px; font-size: 16px; }
+    .modal-content input, .modal-content textarea { width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <div class="title-container">
-      <h1>JADWAL RONDA RT 02 RW 17</h1>
-    </div>
+<div class="container">
+  <h1 class="title">JADWAL RONDA RT 02 RW 17</h1>
+  <hr class="divider">
 
-    <table class="schedule-table">
-
-      <!-- Selasa, 28-07-2026 -->
-      <tr class="header-row" data-group="28072026">
-        <th colspan="3" class="header-day">
-          <div class="header-content">
-            <span class="day-title">Selasa, 28-07-2026</span>
-            <div class="btn-group-header">
-              <button class="btn btn-tambah" onclick="tambahAnggota('28072026')">+ Tambah Nama</button>
-              <button class="btn btn-tambah-ket" onclick="bukaModalKejadian('28072026')">+ Keterangan</button>
-              <button class="btn btn-selesai" onclick="toggleSelesai('28072026')">Selesai</button>
-              <button class="btn btn-reset" onclick="resetGroup('28072026')">Reset Hari Ini</button>
-            </div>
-          </div>
-        </th>
-      </tr>
-      <tbody id="group-28072026">
-        <tr data-group="28072026"><td class="num-col">1</td><td class="name-col">PENDI SUHENDI</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="28072026"><td class="num-col">2</td><td class="name-col">DEDE SATIM</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="28072026"><td class="num-col">3</td><td class="name-col">WAHAB</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="28072026"><td class="num-col">4</td><td class="name-col">RUSDI</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="28072026"><td class="num-col">5</td><td class="name-col">ASEP MEKA</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-      </tbody>
-
-      <!-- Rabu, 29-07-2026 -->
-      <tr class="header-row" data-group="29072026">
-        <th colspan="3" class="header-day">
-          <div class="header-content">
-            <span class="day-title">Rabu, 29-07-2026</span>
-            <div class="btn-group-header">
-              <button class="btn btn-tambah" onclick="tambahAnggota('29072026')">+ Tambah Nama</button>
-              <button class="btn btn-tambah-ket" onclick="bukaModalKejadian('29072026')">+ Keterangan</button>
-              <button class="btn btn-selesai" onclick="toggleSelesai('29072026')">Selesai</button>
-              <button class="btn btn-reset" onclick="resetGroup('29072026')">Reset Hari Ini</button>
-            </div>
-          </div>
-        </th>
-      </tr>
-      <tbody id="group-29072026">
-        <tr data-group="29072026"><td class="num-col">1</td><td class="name-col">OKY RAHMATULLOH</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="29072026"><td class="num-col">2</td><td class="name-col">ROHANA FIRMANSYAH</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="29072026"><td class="num-col">3</td><td class="name-col">EMAN SULAEMAN</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="29072026"><td class="num-col">4</td><td class="name-col">ROHANA</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="29072026"><td class="num-col">5</td><td class="name-col">SAEPULOH</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-      </tbody>
-
-    </table>
-
-    <div style="text-align: center; margin-bottom: 20px;">
-      <button class="btn btn-reset" style="padding: 8px 16px; font-size: 0.85rem;" onclick="resetSemuaCache()">🔄 Reset Ulang Ke Nama Semula</button>
-    </div>
-
-    <div class="footer-container">
-      <div class="sig-box">
-        <div class="sig-title">KETUA RW 17</div>
-        <div class="sig-name">BUDI MANSYAH</div>
-      </div>
-      <div class="sig-box">
-        <div class="sig-title">KETUA RT 02</div>
-        <div class="sig-name">IWAN SETIAWAN</div>
-      </div>
+  <div class="header-bar">
+    <span id="tanggal-hari-ini">Selasa, 28-07-2026</span>
+    <div class="btn-group">
+      <button class="btn-tambah" onclick="bukaModal('modalTambah')">+ Tambah Nama</button>
+      <button class="btn-ket" onclick="bukaModal('modalKet')">+ Keterangan</button>
+      <button class="btn-selesai" onclick="aksiSelesai()">Selesai</button>
+      <button class="btn-reset" onclick="aksiReset()">Reset Hari Ini</button>
     </div>
   </div>
 
-  <!-- MODAL EDIT KETERANGAN -->
-  <div id="modalKet" class="modal-backdrop">
-    <div class="modal-box">
-      <h3>Edit Catatan Kejadian Hari Ini</h3>
-      <textarea id="modalKetText" placeholder="Ketikkan keterangan atau catatan kejadian di sini..."></textarea>
-      <div class="modal-actions">
-        <button class="modal-btn modal-btn-batal" onclick="tutupModalKejadian()">Batal</button>
-        <button class="modal-btn modal-btn-simpan" onclick="simpanKejadian()">Simpan</button>
-      </div>
+  <table>
+    <tbody id="tabel-ronda">
+      <tr>
+        <td class="col-no">1</td>
+        <td class="col-nama">PENDI SUHENDI</td>
+        <td class="col-action"><button type="button" class="btn-hadir" onclick="toggleHadir(this)">Hadir</button></td>
+      </tr>
+      <tr>
+        <td class="col-no">2</td>
+        <td class="col-nama">DEDE SATIM</td>
+        <td class="col-action"><button type="button" class="btn-hadir" onclick="toggleHadir(this)">Hadir</button></td>
+      </tr>
+      <tr>
+        <td class="col-no">3</td>
+        <td class="col-nama">WAHAB</td>
+        <td class="col-action"><button type="button" class="btn-hadir" onclick="toggleHadir(this)">Hadir</button></td>
+      </tr>
+      <tr>
+        <td class="col-no">4</td>
+        <td class="col-nama">RUSDI</td>
+        <td class="col-action"><button type="button" class="btn-hadir" onclick="toggleHadir(this)">Hadir</button></td>
+      </tr>
+      <tr>
+        <td class="col-no">5</td>
+        <td class="col-nama">ASEP MEKA</td>
+        <td class="col-action"><button type="button" class="btn-hadir" onclick="toggleHadir(this)">Hadir</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal Tambah Nama -->
+<div id="modalTambah" class="modal">
+  <div class="modal-content">
+    <h3>Tambah Nama Petugas Ronda</h3>
+    <input type="text" id="inputNamaBaru" placeholder="Masukkan nama...">
+    <div class="modal-actions">
+      <button class="btn-tambah" style="padding: 6px 12px;" onclick="tambahNama()">Simpan</button>
+      <button onclick="tutupModal('modalTambah')" style="padding: 6px 12px; background:#ccc; border:none; border-radius:4px;">Batal</button>
     </div>
   </div>
+</div>
 
-  <script>
-    const SPREADSHEET_URL = "https://script.google.com/macros/s/AKfycbzigG0IORDB6SWAZHpdC8rCSSmik57Azud13CbUg6tnhP2RZG2e9cHhNnHRFGK-EGItvQ/exec";
-    let activeGroupId = null;
+<!-- Modal Keterangan Kejadian -->
+<div id="modalKet" class="modal">
+  <div class="modal-content">
+    <h3>Laporan / Keterangan</h3>
+    <textarea id="inputKejadian" rows="3" placeholder="Tulis catatan/kejadian..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-ket" style="padding: 6px 12px;" onclick="simpanKeterangan()">Kirim</button>
+      <button onclick="tutupModal('modalKet')" style="padding: 6px 12px; background:#ccc; border:none; border-radius:4px;">Batal</button>
+    </div>
+  </div>
+</div>
 
-    function kirimKeSpreadsheet(payload) {
-      if (!SPREADSHEET_URL || SPREADSHEET_URL.trim() === "") return;
+<script>
+  const SPREADSHEET_URL = "https://script.google.com/macros/s/AKfycbw07X46do2rGRBYr5jc7NNhN_ze6ZFe0aWMKy6wGqA_Thr8QSTNuwNekoYJFW8TJbIgPQ/exec";
 
-      fetch(SPREADSHEET_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+  function getWaktuSekarang() {
+    const now = new Date();
+    return String(now.getHours()).padStart(2, '0') + ':' + 
+           String(now.getMinutes()).padStart(2, '0') + ':' + 
+           String(now.getSeconds()).padStart(2, '0');
+  }
+
+  function getHariTanggal() {
+    return document.getElementById('tanggal-hari-ini').textContent.trim();
+  }
+
+  function kirimKeSpreadsheet(payload) {
+    if (!SPREADSHEET_URL) return;
+    fetch(SPREADSHEET_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    })
+    .then(() => setTimeout(sinkronkanData, 1500))
+    .catch(err => console.error("Gagal mengirim data:", err));
+  }
+
+  function sinkronkanData() {
+    if (!SPREADSHEET_URL) return;
+    fetch(SPREADSHEET_URL)
+      .then(res => res.json())
+      .then(response => {
+        if (response.status === "success" && response.data) {
+          updateTampilanDariSheet(response.data);
+        }
       })
-      .then(() => {
-        console.log("Data berhasil dikirim ke Spreadsheet:", payload);
-        // Setelah mengirim data, tarik data terbaru dari sheet
-        setTimeout(sinkronkanData, 1500);
-      })
-      .catch(err => console.error("Gagal mengirim ke Spreadsheet:", err));
-    }
+      .catch(err => console.error("Gagal membaca data:", err));
+  }
 
-    function getWaktuSekarang() {
-      const now = new Date();
-      const jam = String(now.getHours()).padStart(2, '0');
-      const menit = String(now.getMinutes()).padStart(2, '0');
-      const detik = String(now.getSeconds()).padStart(2, '0');
-      return `${jam}:${menit}:${detik}`;
-    }
+  function updateTampilanDariSheet(rowsData) {
+    const hariTanggalHTML = getHariTanggal();
 
-    function getHariTanggal(groupId) {
-      const headerRow = document.querySelector(`.header-row[data-group="${groupId}"]`);
-      if (headerRow) {
-        const titleEl = headerRow.querySelector('.day-title');
-        return titleEl ? titleEl.textContent.trim() : groupId;
-      }
-      return groupId;
-    }
+    for (let i = 1; i < rowsData.length; i++) {
+      const row = rowsData[i];
+      const hariTanggalSheet = row[1];
+      const jamAction = row[2];
+      const namaSheet = row[3];
+      const statusSheet = row[4];
 
-    // SINKRONISASI REAL-TIME DARI SPREADSHEET
-    function sinkronkanData() {
-      if (!SPREADSHEET_URL) return;
+      if (!namaSheet || !statusSheet) continue;
 
-      fetch(SPREADSHEET_URL)
-        .then(res => res.json())
-        .then(response => {
-          if (response.status === "success" && response.data) {
-            updateTampilanDariSheet(response.data);
-          }
-        })
-        .catch(err => console.error("Gagal menyinkronkan data:", err));
-    }
-
-    function updateTampilanDariSheet(rowsData) {
-      // Baris pertama (0) adalah Header
-      for (let i = 1; i < rowsData.length; i++) {
-        const row = rowsData[i];
-        const hariTanggalSheet = row[1]; // Kolom Hari/Tanggal Ronda
-        const jamAction = row[2];        // Kolom Jam Action
-        const namaSheet = row[3];        // Kolom Nama Warga
-        const statusSheet = row[4];      // Kolom Status
-
-        if (!namaSheet || !statusSheet) continue;
-
-        // Cari baris di tabel HTML yang sesuai dengan Nama dan Tanggal
-        document.querySelectorAll('tr:not(.header-row):not(.ket-row)').forEach(tr => {
-          const nameCol = tr.querySelector('.name-col');
-          const groupId = tr.getAttribute('data-group');
-          const hariTanggalHTML = getHariTanggal(groupId);
-
-          if (nameCol && nameCol.textContent.trim().toUpperCase() === namaSheet.trim().toUpperCase() && hariTanggalHTML === hariTanggalSheet) {
-            const btnHadir = tr.querySelector('.btn-hadir');
-            if (btnHadir && !btnHadir.disabled) {
-              if (statusSheet === "HADIR") {
-                btnHadir.classList.add('active');
-                btnHadir.setAttribute('data-time', jamAction);
-                btnHadir.textContent = `✓ Hadir (${jamAction})`;
-                tr.classList.add('is-present');
-              } else if (statusSheet === "BATAL HADIR") {
-                btnHadir.classList.remove('active');
-                btnHadir.removeAttribute('data-time');
-                btnHadir.textContent = 'Hadir';
-                tr.classList.remove('is-present');
-              }
+      document.querySelectorAll('#tabel-ronda tr').forEach(tr => {
+        const nameCol = tr.querySelector('.col-nama');
+        if (nameCol && nameCol.textContent.trim().toUpperCase() === namaSheet.trim().toUpperCase() && hariTanggalHTML === hariTanggalSheet) {
+          const btnHadir = tr.querySelector('.btn-hadir');
+          if (btnHadir) {
+            if (statusSheet === "HADIR") {
+              btnHadir.classList.add('active');
+              btnHadir.textContent = `✓ Hadir (${jamAction})`;
+            } else if (statusSheet === "BATAL HADIR") {
+              btnHadir.classList.remove('active');
+              btnHadir.textContent = 'Hadir';
             }
-          }
-        });
-      }
-      saveState();
-    }
-
-    // FUNGSI UTAMA SELESAI RONDA
-    function toggleSelesai(groupId) {
-      const headerRow = document.querySelector(`.header-row[data-group="${groupId}"]`);
-      const groupRows = document.querySelectorAll(`#group-${groupId} tr:not(.ket-row)`);
-      const btn = headerRow.querySelector('.btn-selesai');
-      const hariTanggal = getHariTanggal(groupId);
-      
-      let waktu = btn.getAttribute('data-time') || getWaktuSekarang();
-      const isCompleted = btn.classList.toggle('completed');
-
-      if (isCompleted) {
-        btn.setAttribute('data-time', waktu);
-        btn.textContent = `✓ Selesai (${waktu})`;
-        headerRow.classList.add('group-done');
-
-        groupRows.forEach(row => {
-          const hadirBtn = row.querySelector('.btn-hadir');
-          if (hadirBtn) {
-            hadirBtn.disabled = true;
-            if (!hadirBtn.classList.contains('active')) {
-              hadirBtn.classList.add('absen');
-              hadirBtn.textContent = 'Tidak Hadir';
-              row.classList.add('is-absent');
-            }
-          }
-        });
-
-        kirimKeSpreadsheet({
-          hariTanggal: hariTanggal,
-          waktu: waktu,
-          nama: "-",
-          status: "RONDA SELESAI",
-          keterangan: "Seluruh rangkaian kegiatan ronda hari ini telah diselesaikan."
-        });
-      } else {
-        btn.removeAttribute('data-time');
-        btn.textContent = 'Selesai';
-        headerRow.classList.remove('group-done');
-
-        groupRows.forEach(row => {
-          row.classList.remove('is-absent');
-          const hadirBtn = row.querySelector('.btn-hadir');
-          if (hadirBtn) {
-            hadirBtn.disabled = false;
-            hadirBtn.classList.remove('absen');
-            if (!hadirBtn.classList.contains('active')) {
-              hadirBtn.textContent = 'Hadir';
-            }
-          }
-        });
-      }
-      saveState();
-    }
-
-    function toggleHadir(btn) {
-      const row = btn.closest('tr');
-      const groupId = row.getAttribute('data-group');
-      const namaWarga = row.querySelector('.name-col').textContent.trim();
-      const hariTanggal = getHariTanggal(groupId);
-      
-      const isPresent = btn.classList.toggle('active');
-      const waktu = getWaktuSekarang();
-      
-      if (isPresent) {
-        btn.setAttribute('data-time', waktu);
-        btn.textContent = `✓ Hadir (${waktu})`;
-        row.classList.add('is-present');
-
-        kirimKeSpreadsheet({
-          hariTanggal: hariTanggal,
-          waktu: waktu,
-          nama: namaWarga,
-          status: "HADIR",
-          keterangan: "Presensi Ronda"
-        });
-      } else {
-        btn.removeAttribute('data-time');
-        btn.textContent = 'Hadir';
-        row.classList.remove('is-present');
-
-        kirimKeSpreadsheet({
-          hariTanggal: hariTanggal,
-          waktu: waktu,
-          nama: namaWarga,
-          status: "BATAL HADIR",
-          keterangan: "Status hadir dibatalkan"
-        });
-      }
-      saveState();
-    }
-
-    function resetGroup(groupId) {
-      const headerRow = document.querySelector(`.header-row[data-group="${groupId}"]`);
-      const groupRows = document.querySelectorAll(`#group-${groupId} tr`);
-      const selesaiBtn = headerRow.querySelector('.btn-selesai');
-      const btnTambahKet = headerRow.querySelector('.btn-tambah-ket');
-
-      selesaiBtn.classList.remove('completed');
-      selesaiBtn.removeAttribute('data-time');
-      selesaiBtn.textContent = 'Selesai';
-      headerRow.classList.remove('group-done');
-
-      btnTambahKet.textContent = "+ Keterangan";
-
-      groupRows.forEach(row => {
-        if (row.classList.contains('ket-row')) {
-          row.remove();
-        } else {
-          row.classList.remove('group-done', 'is-present', 'is-absent');
-          const hadirBtn = row.querySelector('.btn-hadir');
-          if (hadirBtn) {
-            hadirBtn.classList.remove('active', 'absen');
-            hadirBtn.removeAttribute('data-time');
-            hadirBtn.textContent = 'Hadir';
-            hadirBtn.disabled = false;
           }
         }
       });
-
-      saveState();
     }
+  }
 
-    function tambahAnggota(groupId) {
-      const namaBaru = prompt("Masukkan nama anggota baru:");
-      if (!namaBaru || namaBaru.trim() === "") return;
+  function bukaModal(id) { document.getElementById(id).style.display = 'flex'; }
+  function tutupModal(id) { document.getElementById(id).style.display = 'none'; }
 
-      const tbody = document.getElementById(`group-${groupId}`);
-      const ketRow = tbody.querySelector('.ket-row');
+  // Fungsi Klik Tombol Hadir
+  function toggleHadir(btn) {
+    const row = btn.closest('tr');
+    const namaWarga = row.querySelector('.col-nama').textContent.trim();
+    const isPresent = btn.classList.toggle('active');
+    const waktu = getWaktuSekarang();
 
-      const tr = document.createElement('tr');
-      tr.setAttribute('data-group', groupId);
-      tr.setAttribute('data-custom', 'true');
-
-      tr.innerHTML = `
-        <td class="num-col"></td>
-        <td class="name-col">${namaBaru.trim().toUpperCase()}</td>
-        <td class="action-col">
-          <button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button>
-          <button class="btn btn-delete" onclick="hapusAnggota(this)">✕</button>
-        </td>
-      `;
-
-      if (ketRow) {
-        tbody.insertBefore(tr, ketRow);
-      } else {
-        tbody.appendChild(tr);
-      }
-
-      updateNomorUrut(groupId);
-      saveState();
-    }
-
-    function hapusAnggota(btn) {
-      if (confirm("Apakah Anda yakin ingin menghapus nama ini?")) {
-        const row = btn.closest('tr');
-        const groupId = row.getAttribute('data-group');
-        row.remove();
-        updateNomorUrut(groupId);
-        saveState();
-      }
-    }
-
-    function updateNomorUrut(groupId) {
-      const rows = document.querySelectorAll(`#group-${groupId} tr:not(.ket-row)`);
-      rows.forEach((row, index) => {
-        row.querySelector('.num-col').textContent = index + 1;
+    if (isPresent) {
+      btn.textContent = `✓ Hadir (${waktu})`;
+      kirimKeSpreadsheet({
+        hariTanggal: getHariTanggal(),
+        waktu: waktu,
+        nama: namaWarga,
+        status: "HADIR",
+        keterangan: "Presensi Ronda"
+      });
+    } else {
+      btn.textContent = 'Hadir';
+      kirimKeSpreadsheet({
+        hariTanggal: getHariTanggal(),
+        waktu: waktu,
+        nama: namaWarga,
+        status: "BATAL HADIR",
+        keterangan: "Status hadir dibatalkan"
       });
     }
+  }
 
-    function bukaModalKejadian(groupId) {
-      activeGroupId = groupId;
-      const tbody = document.getElementById(`group-${groupId}`);
-      const ketRow = tbody.querySelector('.ket-row .ket-text');
-      const text = ketRow ? ketRow.textContent : '';
+  function tambahNama() {
+    const nama = document.getElementById('inputNamaBaru').value;
+    if (!nama) return alert('Nama tidak boleh kosong');
+    
+    const tbody = document.getElementById('tabel-ronda');
+    const totalRow = tbody.rows.length + 1;
+    
+    const newRow = `
+      <tr>
+        <td class="col-no">${totalRow}</td>
+        <td class="col-nama">${nama.toUpperCase()}</td>
+        <td class="col-action"><button type="button" class="btn-hadir" onclick="toggleHadir(this)">Hadir</button></td>
+      </tr>
+    `;
+    tbody.insertAdjacentHTML('beforeend', newRow);
+    document.getElementById('inputNamaBaru').value = '';
+    tutupModal('modalTambah');
+  }
 
-      document.getElementById('modalKetText').value = text;
-      document.getElementById('modalKet').style.display = 'flex';
-    }
+  function simpanKeterangan() {
+    const text = document.getElementById('inputKejadian').value;
+    if (!text) return alert('Keterangan tidak boleh kosong');
 
-    function tutupModalKejadian() {
-      document.getElementById('modalKet').style.display = 'none';
-      activeGroupId = null;
-    }
+    kirimKeSpreadsheet({
+      hariTanggal: getHariTanggal(),
+      waktu: getWaktuSekarang(),
+      nama: "-",
+      status: "CATATAN KEJADIAN",
+      keterangan: text
+    });
 
-    function simpanKejadian() {
-      if (!activeGroupId) return;
+    alert('Keterangan disimpan: ' + text);
+    document.getElementById('inputKejadian').value = '';
+    tutupModal('modalKet');
+  }
 
-      const isi = document.getElementById('modalKetText').value;
-      const tbody = document.getElementById(`group-${activeGroupId}`);
-      let ketRow = tbody.querySelector('.ket-row');
-      const headerRow = document.querySelector(`.header-row[data-group="${activeGroupId}"]`);
-      const btnTambahKet = headerRow.querySelector('.btn-tambah-ket');
-      const hariTanggal = getHariTanggal(activeGroupId);
-      const waktu = getWaktuSekarang();
-
-      if (isi.trim() !== "") {
-        if (!ketRow) {
-          ketRow = document.createElement('tr');
-          ketRow.className = 'ket-row';
-          tbody.appendChild(ketRow);
-        }
-        ketRow.innerHTML = `<td colspan="3"><span class="ket-title">📌 Catatan Kejadian:</span> <span class="ket-text">${escapeHtml(isi.trim())}</span></td>`;
-        btnTambahKet.textContent = "✏️ Edit Keterangan";
-
-        kirimKeSpreadsheet({
-          hariTanggal: hariTanggal,
-          waktu: waktu,
-          nama: "-",
-          status: "CATATAN KEJADIAN",
-          keterangan: isi.trim()
-        });
-      } else {
-        if (ketRow) ketRow.remove();
-        btnTambahKet.textContent = "+ Keterangan";
-      }
-
-      tutupModalKejadian();
-      saveState();
-    }
-
-    function escapeHtml(text) {
-      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    }
-
-    function resetSemuaCache() {
-      if (confirm("Apakah Anda yakin ingin mengembalikan seluruh daftar ke nama-nama asli semula?")) {
-        localStorage.removeItem('ronda_full_schedule_dated');
-        location.reload();
-      }
-    }
-
-    function saveState() {
-      const groupsData = {};
-
-      document.querySelectorAll('tbody[id^="group-"]').forEach(tbody => {
-        const groupId = tbody.id.replace('group-', '');
-        const rows = [];
-
-        tbody.querySelectorAll('tr:not(.ket-row)').forEach(row => {
-          const btnHadir = row.querySelector('.btn-hadir');
-          rows.push({
-            name: row.querySelector('.name-col').textContent,
-            isPresent: btnHadir ? btnHadir.classList.contains('active') : false,
-            timeHadir: btnHadir ? btnHadir.getAttribute('data-time') : null,
-            isCustom: row.hasAttribute('data-custom')
-          });
-        });
-
-        const headerRow = document.querySelector(`.header-row[data-group="${groupId}"]`);
-        const btnSelesai = headerRow.querySelector('.btn-selesai');
-        const ketRow = tbody.querySelector('.ket-row .ket-text');
-
-        groupsData[groupId] = {
-          completed: btnSelesai ? btnSelesai.classList.contains('completed') : false,
-          timeSelesai: btnSelesai ? btnSelesai.getAttribute('data-time') : null,
-          kejadianText: ketRow ? ketRow.textContent : null,
-          rows: rows
-        };
+  function aksiReset() {
+    if (confirm('Apakah Anda yakin ingin mereset kehadiran hari ini?')) {
+      const btns = document.querySelectorAll('.btn-hadir');
+      btns.forEach(b => {
+        b.classList.remove('active');
+        b.textContent = 'Hadir';
       });
-
-      localStorage.setItem('ronda_full_schedule_dated', JSON.stringify(groupsData));
     }
+  }
 
-    function loadState() {
-      const saved = localStorage.getItem('ronda_full_schedule_dated');
-      if (saved) {
-        const groupsData = JSON.parse(saved);
+  function aksiSelesai() {
+    kirimKeSpreadsheet({
+      hariTanggal: getHariTanggal(),
+      waktu: getWaktuSekarang(),
+      nama: "-",
+      status: "RONDA SELESAI",
+      keterangan: "Seluruh kegiatan ronda selesai"
+    });
+    alert('Jadwal ronda hari ini diselesaikan!');
+  }
 
-        Object.keys(groupsData).forEach(groupId => {
-          const tbody = document.getElementById(`group-${groupId}`);
-          if (!tbody) return;
+  document.addEventListener('DOMContentLoaded', sinkronkanData);
+  setInterval(sinkronkanData, 5000);
+</script>
 
-          const data = groupsData[groupId];
-          if (!data || !data.rows) return;
-
-          const existingRows = tbody.querySelectorAll('tr:not(.ket-row)');
-
-          data.rows.forEach((rowData, index) => {
-            let tr = existingRows[index];
-
-            if (!tr) {
-              tr = document.createElement('tr');
-              tr.setAttribute('data-group', groupId);
-              if (rowData.isCustom) tr.setAttribute('data-custom', 'true');
-              tbody.appendChild(tr);
-            }
-
-            if (rowData.isPresent) tr.classList.add('is-present');
-            if (data.completed && !rowData.isPresent) tr.classList.add('is-absent');
-
-            const timeStr = rowData.timeHadir ? ` (${rowData.timeHadir})` : '';
-            let hadirBtnClass = rowData.isPresent ? 'active' : '';
-            let hadirText = rowData.isPresent ? `✓ Hadir${timeStr}` : 'Hadir';
-
-            if (data.completed && !rowData.isPresent) {
-              hadirBtnClass = 'absen';
-              hadirText = 'Tidak Hadir';
-            }
-
-            tr.innerHTML = `
-              <td class="num-col">${index + 1}</td>
-              <td class="name-col">${rowData.name}</td>
-              <td class="action-col">
-                <button class="btn btn-hadir ${hadirBtnClass}" 
-                        ${rowData.timeHadir ? `data-time="${rowData.timeHadir}"` : ''} 
-                        ${data.completed ? 'disabled' : ''} 
-                        onclick="toggleHadir(this)">
-                  ${hadirText}
-                </button>
-                ${rowData.isCustom ? '<button class="btn btn-delete" onclick="hapusAnggota(this)">✕</button>' : ''}
-              </td>
-            `;
-          });
-
-          if (data.kejadianText) {
-            let ketRow = tbody.querySelector('.ket-row');
-            if (!ketRow) {
-              ketRow = document.createElement('tr');
-              ketRow.className = 'ket-row';
-              tbody.appendChild(ketRow);
-            }
-            ketRow.innerHTML = `<td colspan="3"><span class="ket-title">📌 Catatan Kejadian:</span> <span class="ket-text">${escapeHtml(data.kejadianText)}</span></td>`;
-          }
-
-          const headerRow = document.querySelector(`.header-row[data-group="${groupId}"]`);
-          if (headerRow) {
-            const selesaiBtn = headerRow.querySelector('.btn-selesai');
-            const btnTambahKet = headerRow.querySelector('.btn-tambah-ket');
-
-            if (data.completed) {
-              selesaiBtn.classList.add('completed');
-              if (data.timeSelesai) selesaiBtn.setAttribute('data-time', data.timeSelesai);
-              const timeStr = data.timeSelesai ? ` (${data.timeSelesai})` : '';
-              selesaiBtn.textContent = `✓ Selesai${timeStr}`;
-              headerRow.classList.add('group-done');
-            }
-
-            if (data.kejadianText) {
-              btnTambahKet.textContent = "✏️ Edit Keterangan";
-            }
-          }
-        });
-      }
-
-      // Mulai sinkronisasi awal saat halaman dimuat
-      sinkronkanData();
-    }
-
-    document.addEventListener('DOMContentLoaded', loadState);
-    document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
-
-    // Cek data secara otomatis dari Google Sheets setiap 5 detik
-    setInterval(sinkronkanData, 5000);
-  </script>
 </body>
 </html>
