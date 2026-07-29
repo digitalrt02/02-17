@@ -1,4 +1,4 @@
-   <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
@@ -9,19 +9,17 @@
       -webkit-user-select: none;
       -ms-user-select: none;
       user-select: none;
-    }
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
       font-family: Arial, Helvetica, sans-serif;
       color: #111111;
       background-color: #f4f6f9;
       padding: 12px;
       line-height: 1.4;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     .container {
@@ -46,6 +44,17 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: #1a252f;
+    }
+
+    .loading-status {
+      text-align: center;
+      padding: 10px;
+      background-color: #e3f2fd;
+      color: #0d47a1;
+      font-weight: bold;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      font-size: 0.9rem;
     }
 
     .schedule-table {
@@ -168,11 +177,6 @@
       margin-left: 4px;
     }
 
-    .btn-reset {
-      background-color: #e74c3c;
-      color: white;
-    }
-
     tr.group-done {
       background-color: #ffebee !important;
     }
@@ -250,10 +254,6 @@
       outline: none;
     }
 
-    .modal-box textarea:focus {
-      border-color: #ff9800;
-    }
-
     .modal-actions {
       display: flex;
       justify-content: flex-end;
@@ -277,7 +277,7 @@
       .container { box-shadow: none; padding: 0; max-width: 100%; }
       .header-day { background-color: #dbe5f1 !important; color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       .schedule-table th, .schedule-table td { border: 1px solid #000000; padding: 6px 8px; font-size: 10pt; }
-      .action-col, .btn-group-header, .modal-backdrop { display: none !important; }
+      .action-col, .btn-group-header, .modal-backdrop, .loading-status { display: none !important; }
     }
   </style>
 </head>
@@ -287,6 +287,9 @@
     <div class="title-container">
       <h1>JADWAL RONDA RT 02 RW 17</h1>
     </div>
+
+    <!-- Tanda Loading Koneksi ke Google Sheets -->
+    <div id="loadingStatus" class="loading-status">🔄 Mengambil data real-time dari Google Sheets...</div>
 
     <table class="schedule-table">
 
@@ -299,7 +302,6 @@
               <button class="btn btn-tambah" onclick="tambahAnggota('28072026')">+ Tambah Nama</button>
               <button class="btn btn-tambah-ket" onclick="bukaModalKejadian('28072026')">+ Keterangan</button>
               <button class="btn btn-selesai" onclick="toggleSelesai('28072026')">Selesai</button>
-              <button class="btn btn-reset" onclick="resetGroup('28072026')">Reset Hari Ini</button>
             </div>
           </div>
         </th>
@@ -321,7 +323,6 @@
               <button class="btn btn-tambah" onclick="tambahAnggota('29072026')">+ Tambah Nama</button>
               <button class="btn btn-tambah-ket" onclick="bukaModalKejadian('29072026')">+ Keterangan</button>
               <button class="btn btn-selesai" onclick="toggleSelesai('29072026')">Selesai</button>
-              <button class="btn btn-reset" onclick="resetGroup('29072026')">Reset Hari Ini</button>
             </div>
           </div>
         </th>
@@ -343,7 +344,6 @@
               <button class="btn btn-tambah" onclick="tambahAnggota('30072026')">+ Tambah Nama</button>
               <button class="btn btn-tambah-ket" onclick="bukaModalKejadian('30072026')">+ Keterangan</button>
               <button class="btn btn-selesai" onclick="toggleSelesai('30072026')">Selesai</button>
-              <button class="btn btn-reset" onclick="resetGroup('30072026')">Reset Hari Ini</button>
             </div>
           </div>
         </th>
@@ -356,364 +356,7 @@
         <tr data-group="30072026"><td class="num-col">5</td><td class="name-col">YUDI</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
       </tbody>
 
-      <!-- Jumat, 31-07-2026 -->
-      <tr class="header-row" data-group="31072026">
-        <th colspan="3" class="header-day">
-          <div class="header-content">
-            <span class="day-title">Jumat, 31-07-2026</span>
-            <div class="btn-group-header">
-              <button class="btn btn-tambah" onclick="tambahAnggota('31072026')">+ Tambah Nama</button>
-              <button class="btn btn-tambah-ket" onclick="bukaModalKejadian('31072026')">+ Keterangan</button>
-              <button class="btn btn-selesai" onclick="toggleSelesai('31072026')">Selesai</button>
-              <button class="btn btn-reset" onclick="resetGroup('31072026')">Reset Hari Ini</button>
-            </div>
-          </div>
-        </th>
-      </tr>
-      <tbody id="group-31072026">
-        <tr data-group="31072026"><td class="num-col">1</td><td class="name-col">KUSNANDAR S</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="31072026"><td class="num-col">2</td><td class="name-col">RICARDO</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="31072026"><td class="num-col">3</td><td class="name-col">AGDIA KALIBEA</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="31072026"><td class="num-col">4</td><td class="name-col">WAWAN</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="31072026"><td class="num-col">5</td><td class="name-col">RINTO SUDINI</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-      </tbody>
-
-      <!-- Sabtu, 01-08-2026 -->
-      <tr class="header-row" data-group="01082026">
-        <th colspan="3" class="header-day">
-          <div class="header-content">
-            <span class="day-title">Sabtu, 01-08-2026</span>
-            <div class="btn-group-header">
-              <button class="btn btn-tambah" onclick="tambahAnggota('01082026')">+ Tambah Nama</button>
-              <button class="btn btn-tambah-ket" onclick="bukaModalKejadian('01082026')">+ Keterangan</button>
-              <button class="btn btn-selesai" onclick="toggleSelesai('01082026')">Selesai</button>
-              <button class="btn btn-reset" onclick="resetGroup('01082026')">Reset Hari Ini</button>
-            </div>
-          </div>
-        </th>
-      </tr>
-      <tbody id="group-01082026">
-        <tr data-group="01082026"><td class="num-col">1</td><td class="name-col">ERWIN FERMANSYAH</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="01082026"><td class="num-col">2</td><td class="name-col">APRIATNA</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="01082026"><td class="num-col">3</td><td class="name-col">DADANG SUPRIADI</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="01082026"><td class="num-col">4</td><td class="name-col">DEDI JUNAEDI</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="01082026"><td class="num-col">5</td><td class="name-col">YAYAN SURYANA</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-      </tbody>
-
-      <!-- Minggu, 02-08-2026 -->
-      <tr class="header-row" data-group="02082026">
-        <th colspan="3" class="header-day">
-          <div class="header-content">
-            <span class="day-title">Minggu, 02-08-2026</span>
-            <div class="btn-group-header">
-              <button class="btn btn-tambah" onclick="tambahAnggota('02082026')">+ Tambah Nama</button>
-              <button class="btn btn-tambah-ket" onclick="bukaModalKejadian('02082026')">+ Keterangan</button>
-              <button class="btn btn-selesai" onclick="toggleSelesai('02082026')">Selesai</button>
-              <button class="btn btn-reset" onclick="resetGroup('02082026')">Reset Hari Ini</button>
-            </div>
-          </div>
-        </th>
-      </tr>
-      <tbody id="group-02082026">
-        <tr data-group="02082026"><td class="num-col">1</td><td class="name-col">SUTARJO</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="02082026"><td class="num-col">2</td><td class="name-col">HERU SETIAWAN</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="02082026"><td class="num-col">3</td><td class="name-col">OMAN</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="02082026"><td class="num-col">4</td><td class="name-col">SOLIH</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="02082026"><td class="num-col">5</td><td class="name-col">DEKY</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-      </tbody>
-
-      <!-- Senin, 03-08-2026 -->
-      <tr class="header-row" data-group="03082026">
-        <th colspan="3" class="header-day">
-          <div class="header-content">
-            <span class="day-title">Senin, 03-08-2026</span>
-            <div class="btn-group-header">
-              <button class="btn btn-tambah" onclick="tambahAnggota('03082026')">+ Tambah Nama</button>
-              <button class="btn btn-tambah-ket" onclick="bukaModalKejadian('03082026')">+ Keterangan</button>
-              <button class="btn btn-selesai" onclick="toggleSelesai('03082026')">Selesai</button>
-              <button class="btn btn-reset" onclick="resetGroup('03082026')">Reset Hari Ini</button>
-            </div>
-          </div>
-        </th>
-      </tr>
-      <tbody id="group-03082026">
-        <tr data-group="03082026"><td class="num-col">1</td><td class="name-col">DENI KOMARUDIN</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="03082026"><td class="num-col">2</td><td class="name-col">HIMAWAN</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="03082026"><td class="num-col">3</td><td class="name-col">IZAL</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="03082026"><td class="num-col">4</td><td class="name-col">RAJENDRA</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="03082026"><td class="num-col">5</td><td class="name-col">IWAN SETIAWAN</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-      </tbody>
-
-      <!-- Selasa, 04-08-2026 -->
-      <tr class="header-row" data-group="04082026">
-        <th colspan="3" class="header-day">
-          <div class="header-content">
-            <span class="day-title">Selasa, 04-08-2026</span>
-            <div class="btn-group-header">
-              <button class="btn btn-tambah" onclick="tambahAnggota('04082026')">+ Tambah Nama</button>
-              <button class="btn btn-tambah-ket" onclick="bukaModalKejadian('04082026')">+ Keterangan</button>
-              <button class="btn btn-selesai" onclick="toggleSelesai('04082026')">Selesai</button>
-              <button class="btn btn-reset" onclick="resetGroup('04082026')">Reset Hari Ini</button>
-            </div>
-          </div>
-        </th>
-      </tr>
-      <tbody id="group-04082026">
-        <tr data-group="04082026"><td class="num-col">1</td><td class="name-col">ARIES SUHERMAN</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="04082026"><td class="num-col">2</td><td class="name-col">VIRGIAWAN</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="04082026"><td class="num-col">3</td><td class="name-col">IRWAN SETIAWAN</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="04082026"><td class="num-col">4</td><td class="name-col">M. SOLEHUDIN P</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="04082026"><td class="num-col">5</td><td class="name-col">H. SUTARTO</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-      </tbody>
-
-      <!-- Rabu, 05-08-2026 -->
-      <tr class="header-row" data-group="05082026">
-        <th colspan="3" class="header-day">
-          <div class="header-content">
-            <span class="day-title">Rabu, 05-08-2026</span>
-            <div class="btn-group-header">
-              <button class="btn btn-tambah" onclick="tambahAnggota('05082026')">+ Tambah Nama</button>
-              <button class="btn btn-tambah-ket" onclick="bukaModalKejadian('05082026')">+ Keterangan</button>
-              <button class="btn btn-selesai" onclick="toggleSelesai('05082026')">Selesai</button>
-              <button class="btn btn-reset" onclick="resetGroup('05082026')">Reset Hari Ini</button>
-            </div>
-          </div>
-        </th>
-      </tr>
-      <tbody id="group-05082026">
-        <tr data-group="05082026"><td class="num-col">1</td><td class="name-col">SUTISNA</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="05082026"><td class="num-col">2</td><td class="name-col">YUDI WIGUNA</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="05082026"><td class="num-col">3</td><td class="name-col">ATEP MAMAN</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="05082026"><td class="num-col">4</td><td class="name-col">SUHARTO</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="05082026"><td class="num-col">5</td><td class="name-col">H. SAWUD</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-      </tbody>
-
-      <!-- Kamis, 06-08-2026 -->
-      <tr class="header-row" data-group="06082026">
-        <th colspan="3" class="header-day">
-          <div class="header-content">
-            <span class="day-title">Kamis, 06-08-2026</span>
-            <div class="btn-group-header">
-              <button class="btn btn-tambah" onclick="tambahAnggota('06082026')">+ Tambah Nama</button>
-              <button class="btn btn-tambah-ket" onclick="bukaModalKejadian('06082026')">+ Keterangan</button>
-              <button class="btn btn-selesai" onclick="toggleSelesai('06082026')">Selesai</button>
-              <button class="btn btn-reset" onclick="resetGroup('06082026')">Reset Hari Ini</button>
-            </div>
-          </div>
-        </th>
-      </tr>
-      <tbody id="group-06082026">
-        <tr data-group="06082026"><td class="num-col">1</td><td class="name-col">ARI KUSYANTO</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="06082026"><td class="num-col">2</td><td class="name-col">IRWAN H</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="06082026"><td class="num-col">3</td><td class="name-col">NORMAN</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="06082026"><td class="num-col">4</td><td class="name-col">EKY R</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="06082026"><td class="num-col">5</td><td class="name-col">HELMI</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-      </tbody>
-
-      <!-- Jumat, 07-08-2026 -->
-      <tr class="header-row" data-group="07082026">
-        <th colspan="3" class="header-day">
-          <div class="header-content">
-            <span class="day-title">Jumat, 07-08-2026</span>
-            <div class="btn-group-header">
-              <button class="btn btn-tambah" onclick="tambahAnggota('07082026')">+ Tambah Nama</button>
-              <button class="btn btn-tambah-ket" onclick="bukaModalKejadian('07082026')">+ Keterangan</button>
-              <button class="btn btn-selesai" onclick="toggleSelesai('07082026')">Selesai</button>
-              <button class="btn btn-reset" onclick="resetGroup('07082026')">Reset Hari Ini</button>
-            </div>
-          </div>
-        </th>
-      </tr>
-      <tbody id="group-07082026">
-        <tr data-group="07082026"><td class="num-col">1</td><td class="name-col">RIZKI MUSLIHAT</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="07082026"><td class="num-col">2</td><td class="name-col">HANAFIH</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="07082026"><td class="num-col">3</td><td class="name-col">JAJANG RAHMAT</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="07082026"><td class="num-col">4</td><td class="name-col">DAYAT</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="07082026"><td class="num-col">5</td><td class="name-col">BELDI</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-      </tbody>
-
-      <!-- Sabtu, 08-08-2026 -->
-      <tr class="header-row" data-group="08082026">
-        <th colspan="3" class="header-day">
-          <div class="header-content">
-            <span class="day-title">Sabtu, 08-08-2026</span>
-            <div class="btn-group-header">
-              <button class="btn btn-tambah" onclick="tambahAnggota('08082026')">+ Tambah Nama</button>
-              <button class="btn btn-tambah-ket" onclick="bukaModalKejadian('08082026')">+ Keterangan</button>
-              <button class="btn btn-selesai" onclick="toggleSelesai('08082026')">Selesai</button>
-              <button class="btn btn-reset" onclick="resetGroup('08082026')">Reset Hari Ini</button>
-            </div>
-          </div>
-        </th>
-      </tr>
-      <tbody id="group-08082026">
-        <tr data-group="08082026"><td class="num-col">1</td><td class="name-col">WAWAN WIDAYAT</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="08082026"><td class="num-col">2</td><td class="name-col">BUDI AHMAD</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="08082026"><td class="num-col">3</td><td class="name-col">AHMAD SAMSUDIN</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="08082026"><td class="num-col">4</td><td class="name-col">IRFAN GUMELAR</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="08082026"><td class="num-col">5</td><td class="name-col">INDRA BUDIMAN</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-      </tbody>
-
-      <!-- Minggu, 09-08-2026 -->
-      <tr class="header-row" data-group="09082026">
-        <th colspan="3" class="header-day">
-          <div class="header-content">
-            <span class="day-title">Minggu, 09-08-2026</span>
-            <div class="btn-group-header">
-              <button class="btn btn-tambah" onclick="tambahAnggota('09082026')">+ Tambah Nama</button>
-              <button class="btn btn-tambah-ket" onclick="bukaModalKejadian('09082026')">+ Keterangan</button>
-              <button class="btn btn-selesai" onclick="toggleSelesai('09082026')">Selesai</button>
-              <button class="btn btn-reset" onclick="resetGroup('09082026')">Reset Hari Ini</button>
-            </div>
-          </div>
-        </th>
-      </tr>
-      <tbody id="group-09082026">
-        <tr data-group="09082026"><td class="num-col">1</td><td class="name-col">SUMARSONO</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="09082026"><td class="num-col">2</td><td class="name-col">DEDE SURYANA FATAH</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="09082026"><td class="num-col">3</td><td class="name-col">ENCEP</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="09082026"><td class="num-col">4</td><td class="name-col">IRWAN HERMAWAN</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="09082026"><td class="num-col">5</td><td class="name-col">ABDUL ROHIM</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-      </tbody>
-
-      <!-- Senin, 10-08-2026 -->
-      <tr class="header-row" data-group="10082026">
-        <th colspan="3" class="header-day">
-          <div class="header-content">
-            <span class="day-title">Senin, 10-08-2026</span>
-            <div class="btn-group-header">
-              <button class="btn btn-tambah" onclick="tambahAnggota('10082026')">+ Tambah Nama</button>
-              <button class="btn btn-tambah-ket" onclick="bukaModalKejadian('10082026')">+ Keterangan</button>
-              <button class="btn btn-selesai" onclick="toggleSelesai('10082026')">Selesai</button>
-              <button class="btn btn-reset" onclick="resetGroup('10082026')">Reset Hari Ini</button>
-            </div>
-          </div>
-        </th>
-      </tr>
-      <tbody id="group-10082026">
-        <tr data-group="10082026"><td class="num-col">1</td><td class="name-col">SUMARTONO</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="10082026"><td class="num-col">2</td><td class="name-col">BADAR H</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="10082026"><td class="num-col">3</td><td class="name-col">ARIS ARDIANA</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="10082026"><td class="num-col">4</td><td class="name-col">ASEP SURYANA</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="10082026"><td class="num-col">5</td><td class="name-col">EKO SUPRIANTO</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-      </tbody>
-
-      <!-- Selasa, 11-08-2026 -->
-      <tr class="header-row" data-group="11082026">
-        <th colspan="3" class="header-day">
-          <div class="header-content">
-            <span class="day-title">Selasa, 11-08-2026</span>
-            <div class="btn-group-header">
-              <button class="btn btn-tambah" onclick="tambahAnggota('11082026')">+ Tambah Nama</button>
-              <button class="btn btn-tambah-ket" onclick="bukaModalKejadian('11082026')">+ Keterangan</button>
-              <button class="btn btn-selesai" onclick="toggleSelesai('11082026')">Selesai</button>
-              <button class="btn btn-reset" onclick="resetGroup('11082026')">Reset Hari Ini</button>
-            </div>
-          </div>
-        </th>
-      </tr>
-      <tbody id="group-11082026">
-        <tr data-group="11082026"><td class="num-col">1</td><td class="name-col">MARJUKI</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="11082026"><td class="num-col">2</td><td class="name-col">IBRAHIM ARSYA</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="11082026"><td class="num-col">3</td><td class="name-col">HARTONO</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="11082026"><td class="num-col">4</td><td class="name-col">ASEP SUPARMAN</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="11082026"><td class="num-col">5</td><td class="name-col">DADAN KUSNANDAR</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-      </tbody>
-
-      <!-- Rabu, 12-08-2026 -->
-      <tr class="header-row" data-group="12082026">
-        <th colspan="3" class="header-day">
-          <div class="header-content">
-            <span class="day-title">Rabu, 12-08-2026</span>
-            <div class="btn-group-header">
-              <button class="btn btn-tambah" onclick="tambahAnggota('12082026')">+ Tambah Nama</button>
-              <button class="btn btn-tambah-ket" onclick="bukaModalKejadian('12082026')">+ Keterangan</button>
-              <button class="btn btn-selesai" onclick="toggleSelesai('12082026')">Selesai</button>
-              <button class="btn btn-reset" onclick="resetGroup('12082026')">Reset Hari Ini</button>
-            </div>
-          </div>
-        </th>
-      </tr>
-      <tbody id="group-12082026">
-        <tr data-group="12082026"><td class="num-col">1</td><td class="name-col">TUGIYO</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="12082026"><td class="num-col">2</td><td class="name-col">AGUS PURNAMA</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="12082026"><td class="num-col">3</td><td class="name-col">KARNO</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="12082026"><td class="num-col">4</td><td class="name-col">ELANG</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="12082026"><td class="num-col">5</td><td class="name-col">FAHAD</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-      </tbody>
-
-      <!-- Kamis, 13-08-2026 -->
-      <tr class="header-row" data-group="13082026">
-        <th colspan="3" class="header-day">
-          <div class="header-content">
-            <span class="day-title">Kamis, 13-08-2026</span>
-            <div class="btn-group-header">
-              <button class="btn btn-tambah" onclick="tambahAnggota('13082026')">+ Tambah Nama</button>
-              <button class="btn btn-tambah-ket" onclick="bukaModalKejadian('13082026')">+ Keterangan</button>
-              <button class="btn btn-selesai" onclick="toggleSelesai('13082026')">Selesai</button>
-              <button class="btn btn-reset" onclick="resetGroup('13082026')">Reset Hari Ini</button>
-            </div>
-          </div>
-        </th>
-      </tr>
-      <tbody id="group-13082026">
-        <tr data-group="13082026"><td class="num-col">1</td><td class="name-col">EDI JUNAEDI</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="13082026"><td class="num-col">2</td><td class="name-col">ABDUL KHOLIK</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="13082026"><td class="num-col">3</td><td class="name-col">SUPRIATNA</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="13082026"><td class="num-col">4</td><td class="name-col">WITULAR</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="13082026"><td class="num-col">5</td><td class="name-col">TENI RIANTO</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-      </tbody>
-
-      <!-- Jumat, 14-08-2026 -->
-      <tr class="header-row" data-group="14082026">
-        <th colspan="3" class="header-day">
-          <div class="header-content">
-            <span class="day-title">Jumat, 14-08-2026</span>
-            <div class="btn-group-header">
-              <button class="btn btn-tambah" onclick="tambahAnggota('14082026')">+ Tambah Nama</button>
-              <button class="btn btn-tambah-ket" onclick="bukaModalKejadian('14082026')">+ Keterangan</button>
-              <button class="btn btn-selesai" onclick="toggleSelesai('14082026')">Selesai</button>
-              <button class="btn btn-reset" onclick="resetGroup('14082026')">Reset Hari Ini</button>
-            </div>
-          </div>
-        </th>
-      </tr>
-      <tbody id="group-14082026">
-        <tr data-group="14082026"><td class="num-col">1</td><td class="name-col">ASEP RAHMAT</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="14082026"><td class="num-col">2</td><td class="name-col">IMAN SULAEMAN</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="14082026"><td class="num-col">3</td><td class="name-col">WAWA</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="14082026"><td class="num-col">4</td><td class="name-col">YANA</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="14082026"><td class="num-col">5</td><td class="name-col">YOGI</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-      </tbody>
-
-      <!-- Sabtu, 15-08-2026 -->
-      <tr class="header-row" data-group="15082026">
-        <th colspan="3" class="header-day">
-          <div class="header-content">
-            <span class="day-title">Sabtu, 15-08-2026</span>
-            <div class="btn-group-header">
-              <button class="btn btn-tambah" onclick="tambahAnggota('15082026')">+ Tambah Nama</button>
-              <button class="btn btn-tambah-ket" onclick="bukaModalKejadian('15082026')">+ Keterangan</button>
-              <button class="btn btn-selesai" onclick="toggleSelesai('15082026')">Selesai</button>
-              <button class="btn btn-reset" onclick="resetGroup('15082026')">Reset Hari Ini</button>
-            </div>
-          </div>
-        </th>
-      </tr>
-      <tbody id="group-15082026">
-        <tr data-group="15082026"><td class="num-col">1</td><td class="name-col">HERI BUTARMAN</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="15082026"><td class="num-col">2</td><td class="name-col">INDRA PRAMAYUDA</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="15082026"><td class="num-col">3</td><td class="name-col">IWAN SUMEDIONO</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="15082026"><td class="num-col">4</td><td class="name-col">ILHAM NURJAMAN</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="15082026"><td class="num-col">5</td><td class="name-col">FIRMAN SUTRISMAN</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-        <tr data-group="15082026"><td class="num-col">6</td><td class="name-col">RAHMAT TAUFIK</td><td class="action-col"><button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button></td></tr>
-      </tbody>
-
     </table>
-
-    <div style="text-align: center; margin-bottom: 20px;">
-      <button class="btn btn-reset" style="padding: 8px 16px; font-size: 0.85rem;" onclick="resetSemuaCache()">🔄 Reset Ulang Ke Nama Semula</button>
-    </div>
 
     <div class="footer-container">
       <div class="sig-box">
@@ -744,6 +387,7 @@
 
     let activeGroupId = null;
 
+    // FUNGSI UNTUK MENGIRIM DATA KE GOOGLE SHEETS
     function kirimKeSpreadsheet(payload) {
       if (!SPREADSHEET_URL || SPREADSHEET_URL.trim() === "") return;
 
@@ -753,28 +397,35 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       })
-      .then(() => console.log("Data berhasil dikirim ke Spreadsheet:", payload))
+      .then(() => {
+        console.log("Data berhasil dikirim ke Spreadsheet:", payload);
+        // Tarik ulang data terbaru dari Spreadsheet setelah 1 detik
+        setTimeout(ambilDataDariSpreadsheet, 1000);
+      })
       .catch(err => console.error("Gagal mengirim ke Spreadsheet:", err));
     }
 
-    /* FUNGSI UNTUK MENGAMBIL DATA DATABASE REAL-TIME DARI SPREADSHEET */
+    // FUNGSI MENGAMBIL DATA STREAMING SPREADSHEET SECARA REAL-TIME (TANPA LOCALSTORAGE)
     function ambilDataDariSpreadsheet() {
       if (!SPREADSHEET_URL || SPREADSHEET_URL.trim() === "") return;
+
+      const loadingEl = document.getElementById('loadingStatus');
+      if (loadingEl) loadingEl.style.display = 'block';
 
       fetch(SPREADSHEET_URL)
         .then(response => response.json())
         .then(data => {
           if (Array.isArray(data)) {
             data.forEach(item => {
-              // Cari baris hari sesuai tanggal
               const dayTitles = document.querySelectorAll('.day-title');
               dayTitles.forEach(span => {
+                // Pencocokan Tanggal
                 if (span.textContent.trim() === item.hariTanggal) {
                   const headerRow = span.closest('.header-row');
                   const groupId = headerRow.getAttribute('data-group');
                   const tbody = document.getElementById(`group-${groupId}`);
 
-                  // 1. Jika Status HADIR / BATAL HADIR
+                  // 1. Status HADIR / BATAL HADIR
                   if (item.status === "HADIR") {
                     const rows = tbody.querySelectorAll('tr:not(.ket-row)');
                     rows.forEach(row => {
@@ -801,7 +452,7 @@
                     });
                   }
 
-                  // 2. Jika Status RONDA SELESAI
+                  // 2. Status RONDA SELESAI
                   if (item.status === "RONDA SELESAI") {
                     const btnSelesai = headerRow.querySelector('.btn-selesai');
                     btnSelesai.classList.add('completed');
@@ -815,7 +466,7 @@
                     });
                   }
 
-                  // 3. Jika Status CATATAN KEJADIAN
+                  // 3. Status CATATAN KEJADIAN
                   if (item.status === "CATATAN KEJADIAN") {
                     let ketRow = tbody.querySelector('.ket-row');
                     const btnTambahKet = headerRow.querySelector('.btn-tambah-ket');
@@ -830,10 +481,13 @@
                 }
               });
             });
-            saveState(); // Simpan pembaruan ke cache lokal
           }
+          if (loadingEl) loadingEl.style.display = 'none';
         })
-        .catch(err => console.error("Gagal mengambil data dari Spreadsheet:", err));
+        .catch(err => {
+          console.error("Gagal mengambil data dari Spreadsheet:", err);
+          if (loadingEl) loadingEl.textContent = "❌ Gagal memuat data real-time.";
+        });
     }
 
     function getWaktuSekarang() {
@@ -851,53 +505,6 @@
         return titleEl ? titleEl.textContent.trim() : groupId;
       }
       return groupId;
-    }
-
-    function tambahAnggota(groupId) {
-      const namaBaru = prompt("Masukkan nama anggota baru:");
-      if (!namaBaru || namaBaru.trim() === "") return;
-
-      const tbody = document.getElementById(`group-${groupId}`);
-      const ketRow = tbody.querySelector('.ket-row');
-
-      const tr = document.createElement('tr');
-      tr.setAttribute('data-group', groupId);
-      tr.setAttribute('data-custom', 'true');
-
-      tr.innerHTML = `
-        <td class="num-col"></td>
-        <td class="name-col">${namaBaru.trim().toUpperCase()}</td>
-        <td class="action-col">
-          <button class="btn btn-hadir" onclick="toggleHadir(this)">Hadir</button>
-          <button class="btn btn-delete" onclick="hapusAnggota(this)">✕</button>
-        </td>
-      `;
-
-      if (ketRow) {
-        tbody.insertBefore(tr, ketRow);
-      } else {
-        tbody.appendChild(tr);
-      }
-
-      updateNomorUrut(groupId);
-      saveState();
-    }
-
-    function hapusAnggota(btn) {
-      if (confirm("Apakah Anda yakin ingin menghapus nama ini?")) {
-        const row = btn.closest('tr');
-        const groupId = row.getAttribute('data-group');
-        row.remove();
-        updateNomorUrut(groupId);
-        saveState();
-      }
-    }
-
-    function updateNomorUrut(groupId) {
-      const rows = document.querySelectorAll(`#group-${groupId} tr:not(.ket-row)`);
-      rows.forEach((row, index) => {
-        row.querySelector('.num-col').textContent = index + 1;
-      });
     }
 
     function toggleHadir(btn) {
@@ -934,7 +541,6 @@
           keterangan: "Status hadir dibatalkan"
         });
       }
-      saveState();
     }
 
     function toggleSelesai(groupId) {
@@ -973,7 +579,6 @@
           if(hadirBtn) hadirBtn.disabled = false;
         });
       }
-      saveState();
     }
 
     function bukaModalKejadian(groupId) {
@@ -1018,13 +623,9 @@
           status: "CATATAN KEJADIAN",
           keterangan: isi.trim()
         });
-      } else {
-        if (ketRow) ketRow.remove();
-        btnTambahKet.textContent = "+ Keterangan";
       }
 
       tutupModalKejadian();
-      saveState();
     }
 
     function escapeHtml(text) {
@@ -1035,160 +636,8 @@
                  .replace(/'/g, "&#039;");
     }
 
-    function resetGroup(groupId) {
-      const headerRow = document.querySelector(`.header-row[data-group="${groupId}"]`);
-      const groupRows = document.querySelectorAll(`#group-${groupId} tr`);
-      const selesaiBtn = headerRow.querySelector('.btn-selesai');
-      const btnTambahKet = headerRow.querySelector('.btn-tambah-ket');
-
-      selesaiBtn.classList.remove('completed');
-      selesaiBtn.removeAttribute('data-time');
-      selesaiBtn.textContent = 'Selesai';
-      headerRow.classList.remove('group-done');
-
-      btnTambahKet.textContent = "+ Keterangan";
-
-      groupRows.forEach(row => {
-        if (row.classList.contains('ket-row')) {
-          row.remove();
-        } else {
-          row.classList.remove('group-done', 'is-present');
-          const hadirBtn = row.querySelector('.btn-hadir');
-          if (hadirBtn) {
-            hadirBtn.classList.remove('active');
-            hadirBtn.removeAttribute('data-time');
-            hadirBtn.textContent = 'Hadir';
-            hadirBtn.disabled = false;
-          }
-        }
-      });
-
-      saveState();
-    }
-
-    function resetSemuaCache() {
-      if (confirm("Apakah Anda yakin ingin mengembalikan seluruh daftar ke nama-nama asli semula?")) {
-        localStorage.removeItem('ronda_full_schedule_dated');
-        location.reload();
-      }
-    }
-
-    function saveState() {
-      const groupsData = {};
-
-      document.querySelectorAll('tbody[id^="group-"]').forEach(tbody => {
-        const groupId = tbody.id.replace('group-', '');
-        const rows = [];
-
-        tbody.querySelectorAll('tr:not(.ket-row)').forEach(row => {
-          const btnHadir = row.querySelector('.btn-hadir');
-          rows.push({
-            name: row.querySelector('.name-col').textContent,
-            isPresent: btnHadir ? btnHadir.classList.contains('active') : false,
-            timeHadir: btnHadir ? btnHadir.getAttribute('data-time') : null,
-            isCustom: row.hasAttribute('data-custom')
-          });
-        });
-
-        const headerRow = document.querySelector(`.header-row[data-group="${groupId}"]`);
-        const btnSelesai = headerRow.querySelector('.btn-selesai');
-        const ketRow = tbody.querySelector('.ket-row .ket-text');
-
-        groupsData[groupId] = {
-          completed: btnSelesai ? btnSelesai.classList.contains('completed') : false,
-          timeSelesai: btnSelesai ? btnSelesai.getAttribute('data-time') : null,
-          kejadianText: ketRow ? ketRow.textContent : null,
-          rows: rows
-        };
-      });
-
-      localStorage.setItem('ronda_full_schedule_dated', JSON.stringify(groupsData));
-    }
-
-    function loadState() {
-      const saved = localStorage.getItem('ronda_full_schedule_dated');
-      if (saved) {
-        const groupsData = JSON.parse(saved);
-
-        Object.keys(groupsData).forEach(groupId => {
-          const tbody = document.getElementById(`group-${groupId}`);
-          if (!tbody) return;
-
-          const data = groupsData[groupId];
-          if (!data || !data.rows) return;
-
-          const existingRows = tbody.querySelectorAll('tr:not(.ket-row)');
-          
-          data.rows.forEach((rowData, index) => {
-            let tr = existingRows[index];
-
-            if (!tr) {
-              tr = document.createElement('tr');
-              tr.setAttribute('data-group', groupId);
-              if (rowData.isCustom) tr.setAttribute('data-custom', 'true');
-              tbody.appendChild(tr);
-            }
-
-            if (rowData.isPresent) tr.classList.add('is-present');
-            if (data.completed) tr.classList.add('group-done');
-
-            const timeStr = rowData.timeHadir ? ` (${rowData.timeHadir})` : '';
-
-            tr.innerHTML = `
-              <td class="num-col">${index + 1}</td>
-              <td class="name-col">${rowData.name}</td>
-              <td class="action-col">
-                <button class="btn btn-hadir ${rowData.isPresent ? 'active' : ''}" 
-                        ${rowData.timeHadir ? `data-time="${rowData.timeHadir}"` : ''} 
-                        ${data.completed ? 'disabled' : ''} 
-                        onclick="toggleHadir(this)">
-                  ${rowData.isPresent ? `✓ Hadir${timeStr}` : 'Hadir'}
-                </button>
-                ${rowData.isCustom ? '<button class="btn btn-delete" onclick="hapusAnggota(this)">✕</button>' : ''}
-              </th>
-            `;
-          });
-
-          if (data.kejadianText) {
-            let ketRow = tbody.querySelector('.ket-row');
-            if (!ketRow) {
-              ketRow = document.createElement('tr');
-              ketRow.className = 'ket-row';
-              tbody.appendChild(ketRow);
-            }
-            ketRow.innerHTML = `<td colspan="3"><span class="ket-title">📌 Catatan Kejadian:</span> <span class="ket-text">${escapeHtml(data.kejadianText)}</span></td>`;
-          }
-
-          const headerRow = document.querySelector(`.header-row[data-group="${groupId}"]`);
-          if (headerRow) {
-            const selesaiBtn = headerRow.querySelector('.btn-selesai');
-            const btnTambahKet = headerRow.querySelector('.btn-tambah-ket');
-
-            if (data.completed) {
-              selesaiBtn.classList.add('completed');
-              if (data.timeSelesai) selesaiBtn.setAttribute('data-time', data.timeSelesai);
-              const timeStr = data.timeSelesai ? ` (${data.timeSelesai})` : '';
-              selesaiBtn.textContent = `✓ Selesai${timeStr}`;
-              headerRow.classList.add('group-done');
-            }
-
-            if (data.kejadianText) {
-              btnTambahKet.textContent = "✏️ Edit Keterangan";
-            }
-          }
-        });
-      }
-
-      // SETELAH MEMBACA DARI LOKAL, AMBIL UPDATE TERBARU DARI GOOGLE SHEETS DARI HP LAIN
-      ambilDataDariSpreadsheet();
-    }
-
-    document.addEventListener('DOMContentLoaded', loadState);
+    // PANGGIL SINKRONISASI REAL-TIME SAAT HALAMAN DIMUAT
+    document.addEventListener('DOMContentLoaded', ambilDataDariSpreadsheet);
   </script>
-<script>
-  document.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-  });
-</script>
 </body>
 </html>
