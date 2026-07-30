@@ -758,36 +758,72 @@
         .then(data => {
           if (!Array.isArray(data)) return;
 
+          // Kelompokkan data berdasarkan Hari & Tanggal untuk memproses urutan riwayat
+          const mapData = {};
           data.forEach(item => {
-            const { hariTanggal, waktu, nama, status, keterangan } = item;
-            const headerRows = document.querySelectorAll('.header-row');
+            if (!mapData[item.hariTanggal]) {
+              mapData[item.hariTanggal] = [];
+            }
+            mapData[item.hariTanggal].push(item);
+          });
 
-            headerRows.forEach(header => {
-              const dayTitle = header.querySelector('.day-title').textContent.trim();
-              if (dayTitle === hariTanggal) {
-                const groupId = header.getAttribute('data-group');
-                const tbody = document.getElementById('group-' + groupId);
+          // Iterasi setiap grup hari
+          const headerRows = document.querySelectorAll('.header-row');
+          headerRows.forEach(header => {
+            const dayTitle = header.querySelector('.day-title').textContent.trim();
+            const groupId = header.getAttribute('data-group');
+            const tbody = document.getElementById('group-' + groupId);
 
-                if (tbody && status === 'Hadir') {
+            if (!tbody || !mapData[dayTitle]) return;
+
+            const itemsHariIni = mapData[dayTitle];
+
+            // Tentukan status Selesai Ronda terakhir
+            let statusSelesai = null;
+            let waktuSelesai = '';
+
+            itemsHariIni.forEach(item => {
+              if (item.status === 'Reset Status Hari Ini') {
+                // Jika ada aksi reset, bersihkan dulu status di tampilan HTML untuk hari tersebut
+                tbody.classList.remove('group-done');
+                const btnSelesai = header.querySelector('.btn-selesai');
+                if (btnSelesai) {
+                  btnSelesai.classList.remove('completed');
+                  btnSelesai.textContent = 'Selesai';
+                }
+                statusSelesai = null;
+
+                tbody.querySelectorAll('tr:not(.header-row):not(.ket-row)').forEach(row => {
+                  row.classList.remove('is-present');
+                  const btn = row.querySelector('.btn-hadir');
+                  if (btn) {
+                    btn.classList.remove('active');
+                    btn.textContent = 'Hadir';
+                  }
+                });
+
+                const ketRow = tbody.querySelector('.ket-row');
+                if (ketRow) ketRow.remove();
+              } else {
+                // Proses kehadiran individual
+                if (item.status === 'Hadir') {
                   const rows = tbody.querySelectorAll('tr:not(.header-row):not(.ket-row)');
                   rows.forEach(row => {
                     const nameCol = row.querySelector('.name-col');
-                    if (nameCol && nameCol.textContent.trim() === nama) {
+                    if (nameCol && nameCol.textContent.trim() === item.nama) {
                       row.classList.add('is-present');
                       const btn = row.querySelector('.btn-hadir');
                       if (btn) {
                         btn.classList.add('active');
-                        btn.textContent = `Hadir (${waktu}) 📋`;
+                        btn.textContent = `Hadir (${item.waktu}) 📋`;
                       }
                     }
                   });
-                }
-
-                if (tbody && status === 'Batal Hadir') {
+                } else if (item.status === 'Batal Hadir') {
                   const rows = tbody.querySelectorAll('tr:not(.header-row):not(.ket-row)');
                   rows.forEach(row => {
                     const nameCol = row.querySelector('.name-col');
-                    if (nameCol && nameCol.textContent.trim() === nama) {
+                    if (nameCol && nameCol.textContent.trim() === item.nama) {
                       row.classList.remove('is-present');
                       const btn = row.querySelector('.btn-hadir');
                       if (btn) {
@@ -798,23 +834,14 @@
                   });
                 }
 
-                if (status === 'Selesai Ronda') {
-                  tbody.classList.add('group-done');
-                  const btnSelesai = header.querySelector('.btn-selesai');
-                  if (btnSelesai) {
-                    btnSelesai.classList.add('completed');
-                    btnSelesai.textContent = `Selesai (${waktu}) 📋`;
-                  }
-                } else if (status === 'Batal Selesai Ronda') {
-                  tbody.classList.remove('group-done');
-                  const btnSelesai = header.querySelector('.btn-selesai');
-                  if (btnSelesai) {
-                    btnSelesai.classList.remove('completed');
-                    btnSelesai.textContent = 'Selesai';
-                  }
+                // Simpan status selesai paling mutakhir
+                if (item.status === 'Selesai Ronda' || item.status === 'Batal Selesai Ronda') {
+                  statusSelesai = item.status;
+                  waktuSelesai = item.waktu;
                 }
 
-                if (tbody && status === 'Keterangan Ditambahkan' && keterangan && keterangan !== '-') {
+                // Keterangan
+                if (item.status === 'Keterangan Ditambahkan' && item.keterangan && item.keterangan !== '-') {
                   let ketRow = tbody.querySelector('.ket-row');
                   if (!ketRow) {
                     ketRow = document.createElement('tr');
@@ -822,16 +849,29 @@
                     ketRow.innerHTML = `<td colspan="3"><span class="ket-title">KETERANGAN / KEJADIAN:</span><br><span class="ket-body"></span></td>`;
                     tbody.appendChild(ketRow);
                   }
-                  ketRow.querySelector('.ket-body').textContent = keterangan;
-                } else if (tbody && status === 'Keterangan Dihapus') {
+                  ketRow.querySelector('.ket-body').textContent = item.keterangan;
+                } else if (item.status === 'Keterangan Dihapus') {
                   let ketRow = tbody.querySelector('.ket-row');
                   if (ketRow) ketRow.remove();
                 }
               }
             });
 
-            if (status === 'Reset Global') {
-              bersihkanSemuaTampilan();
+            // Terapkan status Selesai terakhir
+            if (statusSelesai === 'Selesai Ronda') {
+              tbody.classList.add('group-done');
+              const btnSelesai = header.querySelector('.btn-selesai');
+              if (btnSelesai) {
+                btnSelesai.classList.add('completed');
+                btnSelesai.textContent = `Selesai (${waktuSelesai}) 📋`;
+              }
+            } else if (statusSelesai === 'Batal Selesai Ronda') {
+              tbody.classList.remove('group-done');
+              const btnSelesai = header.querySelector('.btn-selesai');
+              if (btnSelesai) {
+                btnSelesai.classList.remove('completed');
+                btnSelesai.textContent = 'Selesai';
+              }
             }
           });
         })
