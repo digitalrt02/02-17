@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
@@ -41,6 +41,14 @@
       padding-bottom: 10px;
       border-bottom: 2px solid #333;
       gap: 10px;
+    }
+
+    .top-action-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
     h1 {
@@ -154,6 +162,7 @@
       align-items: center;
       text-align: center;
       min-height: 32px;
+      text-decoration: none;
     }
 
     .btn-hadir {
@@ -183,6 +192,14 @@
 
     .btn-reset { background-color: #e74c3c; color: white; }
     .btn-reset:hover { background-color: #c0392b; }
+
+    .btn-peta {
+      background-color: #2980b9;
+      color: white;
+      padding: 8px 16px;
+      font-size: 0.85rem;
+    }
+    .btn-peta:hover { background-color: #1f618d; }
 
     .btn-reset-global {
       background-color: #d32f2f;
@@ -260,7 +277,7 @@
       .container { box-shadow: none; padding: 0; max-width: 100%; }
       .header-day { background-color: #dbe5f1 !important; color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       .schedule-table th, .schedule-table td { border: 1px solid #000000; padding: 6px 8px; font-size: 10pt; }
-      .action-col, .btn-group-header, .modal-backdrop, .btn-reset-global { display: none !important; }
+      .action-col, .btn-group-header, .modal-backdrop, .btn-reset-global, .btn-peta { display: none !important; }
     }
   </style>
 </head>
@@ -269,7 +286,10 @@
   <div class="container">
     <div class="title-container">
       <h1>JADWAL RONDA RT 02 RW 17</h1>
-      <button class="btn btn-reset-global" onclick="resetGlobal()">Reset Global</button>
+      <div class="top-action-group">
+        <a href="https://digitalrt02.github.io/peta-warga/view.html" target="_blank" class="btn btn-peta">🗺️ Peta Warga</a>
+        <button class="btn btn-reset-global" onclick="resetGlobal()">Reset Global</button>
+      </div>
     </div>
 
     <table class="schedule-table">
@@ -740,7 +760,7 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwCVrWdW7M8gYkFOn0Ul8Ub9cIL1Tn3Yz5KMHi5BT4miqzbOXqzWsglv0zgQz72H5dACQ/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxBbemPY3yHoLz-YT0a7La2z_qM9iMdxQ6LBadQwnfViSb8BNi4MD4CNvSJlhihwxj6/exec";
     let activeGroupId = null;
 
     function getFormattedTime() {
